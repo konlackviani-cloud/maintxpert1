@@ -106,6 +106,61 @@ quoi la recherche hors ligne et la recherche serveur divergent.
 
 ---
 
+## D9 — Jetons sans état, révocation par `actif`
+**Statut :** décidé le 2026-08-22 (phase 2)
+
+Jeton d'accès **8 h** (couvre un quart), jeton de rafraîchissement **7 j**, tous deux signés HS256
+avec le même secret mais porteurs d'un champ `type` : un jeton de rafraîchissement présenté comme
+jeton d'accès est rejeté, et réciproquement.
+
+Aucune table de sessions : les jetons sont sans état. Le **seul point de révocation** est le drapeau
+`utilisateur.actif`, relu en base à chaque rafraîchissement et à chaque lecture de profil.
+
+**Conséquence assumée :** désactiver un compte coupe l'accès au plus tard à l'expiration du jeton
+d'accès en cours, donc jusqu'à 8 h plus tard. Acceptable tant que le nombre d'utilisateurs reste
+limité et qu'aucun rôle Administrateur n'existe (hors périmètre v1.0). À revoir si un vol de
+terminal doit être traité en temps réel.
+
+---
+
+## D10 — Hachage argon2id via `@node-rs/argon2`
+**Statut :** décidé le 2026-08-22 (phase 2)
+
+Paramètres OWASP : 19 MiB de mémoire, 2 itérations, parallélisme 1.
+
+`@node-rs/argon2` plutôt que `argon2` : binaires précompilés, aucun compilateur C++ requis sur le
+poste Windows de développement.
+
+L'algorithme n'est **pas** passé explicitement (`Algorithm` est un const enum ambiant, incompatible
+avec `verbatimModuleSyntax`). argon2id est le défaut de la librairie, et un test vérifie que
+l'empreinte produite commence bien par `$argon2id$` — c'est ce contrôle qui fait foi.
+
+---
+
+## D11 — Pas d'oracle d'énumération des matricules
+**Statut :** décidé le 2026-08-22 (phase 2)
+
+Un matricule inconnu déclenche quand même une vérification argon2 contre une empreinte factice, et
+renvoie **le même message** qu'un mot de passe faux : « Matricule ou mot de passe incorrect. »
+
+Sans cela, la différence de temps de réponse et de message permettrait d'énumérer les matricules du
+personnel. Un compte **désactivé** reçoit en revanche un message distinct — mais seulement après
+validation du mot de passe, donc uniquement pour son titulaire légitime.
+
+---
+
+## D12 — Jetons en `localStorage`
+**Statut :** décidé le 2026-08-22 (phase 2)
+
+Pas de cookie : le terminal est un appareil personnel partagé entre quarts, il faut pouvoir tout
+effacer d'un geste. `seDeconnecter()` efface les jetons **et** purge le cache IndexedDB — exigence
+BYOD.
+
+**Conséquence assumée :** une faille XSS dans la PWA exposerait les jetons. Risque contenu par
+l'expiration 8 h et par l'absence de tout contenu tiers dans l'application.
+
+---
+
 ## Points ouverts (non tranchés)
 
 | # | Point | Phase concernée |
@@ -118,3 +173,5 @@ quoi la recherche hors ligne et la recherche serveur divergent.
 | **O6** | `archivee` : qui archive, sur quel critère ? | 4 |
 | **O7** | Format réel du CSV DimoMaint (colonnes) — extrait à fournir. | 6 |
 | **O8** | Volume de cache : le technicien met-il en cache les 4 chaînes ou seulement la sienne ? | 3 |
+| **O9** | Format réel des matricules SABC. Le motif accepté est volontairement permissif (`[A-Z0-9_-]`, 3 à 20 caractères) faute d'exemples réels. | 2 |
+| **O10** | Charte graphique SABC : les codes couleur exacts ne sont pas publics. En attente du document de charte ou d'un fichier logo. | 3 |

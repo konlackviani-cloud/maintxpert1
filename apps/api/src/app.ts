@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import { env } from './config/env.js';
 import { verifierConnexion } from './db/client.js';
 import { gestionnaireErreurs, routeIntrouvable } from './middlewares/erreurs.js';
+import { routesAuth } from './modules/auth/routes.js';
 
 export function creerApp(): Express {
   const app = express();
@@ -34,8 +35,9 @@ export function creerApp(): Express {
     });
   });
 
+  app.use('/api/v1/auth', routesAuth);
+
   // Les modules métier se branchent ici au fil des phases :
-  //   phase 2 — /api/v1/auth
   //   phase 3 — /api/v1/equipements, /api/v1/entrees-sdcr, /api/v1/interventions
   //   phase 4 — /api/v1/nomenclature
   //   ...

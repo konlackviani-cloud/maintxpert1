@@ -15,6 +15,7 @@
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "icones": "node scripts/generer-icones.mjs",
+    "creer-utilisateur": "npm run creer-utilisateur --workspace @maintxpert/api --",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
