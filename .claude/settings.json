@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+
+      "Bash(npm install*)",
+      "Bash(npm run*)",
+      "Bash(npm test*)",
+      "Bash(npm ls*)",
+      "Bash(npx vitest*)",
+      "Bash(npx tsc*)",
+      "Bash(node *)",
+
+      "Bash(git status*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git pull*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git show*)",
+      "Bash(git branch*)",
+      "Bash(git ls-remote*)",
+      "Bash(git rev-parse*)",
+      "Bash(git config --get*)",
+
+      "PowerShell(npm install*)",
+      "PowerShell(npm run*)",
+      "PowerShell(npm test*)",
+      "PowerShell(npx vitest*)",
+      "PowerShell(node *)",
+      "PowerShell(git status*)",
+      "PowerShell(git add*)",
+      "PowerShell(git commit*)",
+      "PowerShell(git push*)",
+      "PowerShell(git log*)",
+      "PowerShell(git diff*)",
+      "PowerShell(Get-ChildItem*)",
+      "PowerShell(Get-Content*)",
+      "PowerShell(Test-Path*)",
+      "PowerShell(Select-String*)",
+      "PowerShell(New-Item*)",
+      "PowerShell(Set-Content*)",
+      "PowerShell(Add-Content*)",
+      "PowerShell(Copy-Item*)",
+
+      "Edit",
+      "Write"
+    ],
+    "deny": [
+      "Bash(rm -rf*)",
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "PowerShell(Remove-Item -Recurse -Force*)",
+      "PowerShell(git push --force*)",
+      "PowerShell(git reset --hard*)",
+      "Read(./apps/api/.env)",
+      "Read(./.env)"
+    ]
+  }
+}
