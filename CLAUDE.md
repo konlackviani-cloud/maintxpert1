@@ -1,4 +1,4 @@
-# MaintXpert — contexte projet
+﻿# MaintXpert — contexte projet
 
 PWA de diagnostic guidé des défaillances industrielles. Mémoire d'ingénieur génie mécanique,
 SABC, usine Terrain Court (Yaoundé) — 4 chaînes d'embouteillage : CH02, CH05, CH06, CH09.
@@ -178,7 +178,7 @@ npm run db:reset         # rejoue migrations + seed
 | 1 | Setup monorepo, migrations, PWA | fait |
 | 2 | Authentification A1 (JWT matricule) | fait |
 | 3 | Cœur technicien A2–A12 + offline-first | fait |
-| 4 | Nomenclature & validation B1, B2 | à faire |
+| 4 | Nomenclature & validation B1, B2 | fait |
 | 5 | CSD & photos A7, B6 | à faire |
 | 6 | AMDEC & import CSV B4, B7 | à faire |
 | 7 | Dashboard B5, B3 | à faire |
@@ -186,3 +186,4 @@ npm run db:reset         # rejoue migrations + seed
 | 9 | Durcissement, tests, mesure TTDi | à faire |
 
 **Ne pas passer à la phase suivante sans validation explicite de l'utilisateur.**
+

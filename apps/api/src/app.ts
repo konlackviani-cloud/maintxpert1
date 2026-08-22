@@ -11,7 +11,9 @@ import { env } from './config/env.js';
 import { verifierConnexion } from './db/client.js';
 import { gestionnaireErreurs, routeIntrouvable } from './middlewares/erreurs.js';
 import { routesAuth } from './modules/auth/routes.js';
+import { routesNomenclature } from './modules/nomenclature/routes.js';
 import { routesSync } from './modules/sync/routes.js';
+import { routesValidation } from './modules/validation/routes.js';
 
 export function creerApp(): Express {
   const app = express();
@@ -38,10 +40,12 @@ export function creerApp(): Express {
 
   app.use('/api/v1/auth', routesAuth);
   app.use('/api/v1/sync', routesSync);
+  app.use('/api/v1/validation', routesValidation);
+  app.use('/api/v1/nomenclature', routesNomenclature);
 
   // Les modules métier se branchent ici au fil des phases :
-  //   phase 4 — /api/v1/nomenclature, /api/v1/validation
   //   phase 5 — /api/v1/csd, /api/v1/photos
+  //   phase 6 — /api/v1/amdec, /api/v1/import
   //   ...
   //
   // La consultation ne passe PAS par l'API : elle lit le cache IndexedDB,

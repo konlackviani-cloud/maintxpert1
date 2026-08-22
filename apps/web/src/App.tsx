@@ -2,7 +2,6 @@
 
 import { Navigate, Route, BrowserRouter as Routeur, Routes } from 'react-router-dom';
 
-import { AccueilProvisoire } from './app/AccueilProvisoire.js';
 import { ExigeRole, RedirigeSiConnecte, accueilDuRole } from './app/gardes.js';
 import { ConnexionPage } from './modules/auth/ConnexionPage.js';
 import { FournisseurSession, useSession } from './modules/auth/contexte-session.js';
@@ -11,6 +10,8 @@ import { EquipementPage } from './modules/diagnostic/EquipementPage.js';
 import { ResultatsPage } from './modules/diagnostic/ResultatsPage.js';
 import { SymptomePage } from './modules/diagnostic/SymptomePage.js';
 import { FichePage } from './modules/sdcr/FichePage.js';
+import { FileValidationPage } from './modules/pilotage/FileValidationPage.js';
+import { NomenclaturePage } from './modules/pilotage/NomenclaturePage.js';
 import { MesContributionsPage } from './modules/sdcr/MesContributionsPage.js';
 import { NouvelleFichePage } from './modules/sdcr/NouvelleFichePage.js';
 import { Synchronisation } from './modules/sync/Synchronisation.js';
@@ -24,6 +25,11 @@ function Racine(): JSX.Element {
 /** Route du parcours technicien (UC1). */
 function Technicien({ children }: { children: JSX.Element }): JSX.Element {
   return <ExigeRole role="technicien">{children}</ExigeRole>;
+}
+
+/** Route réservée au responsable maintenance. */
+function Responsable({ children }: { children: JSX.Element }): JSX.Element {
+  return <ExigeRole role="responsable">{children}</ExigeRole>;
 }
 
 export function App(): JSX.Element {
@@ -60,15 +66,17 @@ export function App(): JSX.Element {
           <Route path="/diagnostic/fiche/:idSdcr" element={<Technicien><FichePage /></Technicien>} />
           <Route path="/mes-contributions" element={<Technicien><MesContributionsPage /></Technicien>} />
 
-          {/* Responsable — écrans construits aux phases 4 à 8 */}
+          {/* Responsable — UC2 et gestion de la nomenclature */}
           <Route
-            path="/pilotage"
-            element={
-              <ExigeRole role="responsable">
-                <AccueilProvisoire />
-              </ExigeRole>
-            }
+            path="/pilotage/validation"
+            element={<Responsable><FileValidationPage /></Responsable>}
           />
+          <Route
+            path="/pilotage/nomenclature"
+            element={<Responsable><NomenclaturePage /></Responsable>}
+          />
+          {/* Le tableau de bord (B5) arrive en phase 7 ; d'ici là, la file fait l'accueil. */}
+          <Route path="/pilotage" element={<Navigate to="/pilotage/validation" replace />} />
 
           <Route path="/" element={<Racine />} />
           <Route path="*" element={<Racine />} />

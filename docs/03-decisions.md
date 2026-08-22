@@ -1,4 +1,4 @@
-# Journal des décisions (ADR)
+﻿# Journal des décisions (ADR)
 
 Toute décision qui s'écarte du cahier des charges, ou qui l'interprète, est consignée ici.
 
@@ -238,17 +238,56 @@ Deux protections complémentaires, pour les cas que le journal ne couvre pas :
 
 ---
 
+## D17 — Les écrans du responsable travaillent en ligne
+**Statut :** décidé le 2026-08-22 (phase 4) — **écart signalé**
+
+La file de validation (B1) et la gestion de la nomenclature (B2) appellent l'API directement, sans
+passer par le cache local.
+
+Le cahier des charges exige que « 100 % des fonctions de **consultation** » fonctionnent hors ligne.
+Valider une contribution n'est pas de la consultation : c'est une écriture qui engage toute la base
+lue par les techniciens. La faire sur des données périmées ferait valider deux fois le même doublon,
+ou trancher sur une fiche qu'un autre responsable vient de traiter. C'est du travail de bureau, sur
+poste connecté.
+
+La règle hors ligne reste entière pour le technicien, et s'appliquera au **tableau de bord (B5,
+phase 7)**, qui est bien de la consultation.
+
+Conséquence traitée : `ErreurReseau` porte par défaut « vos saisies seront envoyées plus tard », vrai
+pour le technicien mais faux ici. Les écrans responsable ont leur propre message
+(`messageErreurPilotage`) — sans quoi le responsable quitterait l'écran en croyant avoir publié une
+fiche.
+
+---
+
+## D18 — Résolution du point ouvert O5 : les deux voies coexistent
+**Statut :** décidé le 2026-08-22 (phase 4) — **à confirmer**
+
+Le point O5 demandait si `en_correction` signifie « le responsable corrige lui-même » ou « la fiche
+repart au technicien ». Les deux sont implémentés, car ils répondent à des cas différents :
+
+- **Correction directe** — le responsable rattache les niveaux saisis librement à la nomenclature,
+  puis valide. Chemin courant, celui qui construit la nomenclature.
+- **Renvoi en correction** — la fiche passe à `en_correction` quand le contenu technique lui-même
+  est douteux et que seul son auteur peut trancher.
+
+**Limite connue :** le motif du renvoi (comme celui du rejet) est exigé par le schéma mais **n'est
+pas persisté** — `entree_sdcr` n'a pas de champ pour cela. Le technicien voit donc sa fiche revenir
+sans savoir pourquoi. Voir point ouvert O11.
+
+---
+
 ## Points ouverts (non tranchés)
 
 | # | Point | Phase concernée |
 |---|---|---|
 | **O1** | `defaillogramme.symptome_convergence` est décrit « lié à une EntreeSDCR » mais typé VARCHAR. Ajouter une FK `id_sdcr` ? | 8 |
 | **O2** | `mode_amdec` n'a aucun rattachement à `equipement` (seulement `composant` en texte) : le tableau de bord B4 ne peut pas filtrer par chaîne. Ajouter `id_equipement` ? | 6 |
-| **O3** | B2 « fusion » de termes : sans suppression physique, il faut une redirection (`id_terme_remplacant` FK nullable + réécriture des entrées). | 4 |
 | **O4** | `TermeNomenclature` propre à un équipement (conforme au mémoire) → duplication des libellés courants sur les 4 chaînes. Rattachement à la `famille` avec surcharge ? | 4 |
-| **O5** | Statut `en_correction` : le responsable édite lui-même puis valide, ou renvoie la fiche au technicien ? | 4 |
 | **O6** | `archivee` : qui archive, sur quel critère ? | 4 |
 | **O7** | Format réel du CSV DimoMaint (colonnes) — extrait à fournir. | 6 |
 | **O8** | Volume de cache : le technicien met-il en cache les 4 chaînes ou seulement la sienne ? | 3 |
 | **O9** | Format réel des matricules SABC. Le motif accepté est volontairement permissif (`[A-Z0-9_-]`, 3 à 20 caractères) faute d'exemples réels. | 2 |
 | **O10** | Version **carrée** du pictogramme MaintXpert. Le symbole actuel est un demi-engrenage large (~2,9:1), coupé par le mot-symbole : dans une icône carrée il n'occupe qu'une bande centrale. Un SVG donnerait aussi des icônes nettes — la source est un bitmap de 215 px. | 9 |
+
+| **O11** | Motif de rejet et de renvoi en correction : exigé par l'interface mais non persisté, `entree_sdcr` n'ayant pas de champ pour cela. Le technicien voit sa fiche revenir sans savoir pourquoi. Ajouter `motif_decision TEXT` ? | 4 |

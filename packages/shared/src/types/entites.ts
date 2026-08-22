@@ -47,6 +47,8 @@ export interface TermeNomenclature {
   /** Incrémenté à chaque sélection — oriente le tri des listes déroulantes. */
   compteur_usage: number;
   categorie_afnor: string | null;
+  /** Renseigné par une fusion (B2) : ce terme est archivé et redirige vers celui-ci. */
+  id_terme_remplacant: number | null;
 }
 
 /* -------------------------------------------------------------------------- */
