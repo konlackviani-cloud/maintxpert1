@@ -22,6 +22,7 @@
     "db:migrations": "supabase migration list"
   },
   "devDependencies": {
+    "pngjs": "^7.0.0",
     "supabase": "^2.15.8",
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"

@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icone.svg'],
+      includeAssets: ['icones/favicon-32.png', 'icones/icone-180.png'],
       manifest: {
         name: 'MaintXpert — diagnostic des défaillances',
         short_name: 'MaintXpert',
@@ -19,8 +19,8 @@ export default defineConfig({
         scope: '/',
         display: 'standalone',
         orientation: 'portrait',
-        background_color: '#0F172A',
-        theme_color: '#14539A',
+        background_color: '#FFFFFF',
+        theme_color: '#275DAE',
         categories: ['productivity', 'utilities'],
         icons: [
           { src: '/icones/icone-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },

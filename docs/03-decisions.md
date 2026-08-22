@@ -161,6 +161,31 @@ l'expiration 8 h et par l'absence de tout contenu tiers dans l'application.
 
 ---
 
+## D13 — Palette dérivée du logo MaintXpert
+**Statut :** décidé le 2026-08-22
+
+Couleurs échantillonnées dans `design/logo/maintxpert.png` par
+`scripts/analyser-logo.mjs` (classement des pixels par teinte puis moyenne du cœur des aplats — la
+source est un bitmap compressé, aucune zone n'y est strictement uniforme).
+
+| Jeton | Valeur | Contraste sur blanc | Usage |
+|---|---|---|---|
+| `--c-marque-bleu` | `#3174DA` | 4,52:1 | Bleu **exact** du logo. Aplats, pictogrammes, barres. Pas de texte courant. |
+| `--c-marque-nuit` | `#050F2F` | 18,82:1 | Bleu nuit **exact** du logo. Repris par `--c-texte`. |
+| `--c-primaire` | `#275DAE` | 6,44:1 | Bleu du logo assombri, même teinte. Boutons, texte bleu, bordures. |
+| `--c-primaire-fonce` | `#1E4887` | 9,01:1 | Survol, pression. |
+| `--c-primaire` (nuit) | `#4F9FFF` | 5,98:1 sur `#16212F` | Bleu du logo éclairci pour le mode sombre. |
+
+**Le logo ne contient pas d'orange.** Une lecture de la vignette m'avait fait introduire un jeton
+`--c-marque-orange` : l'analyse du fichier a montré qu'il n'existe pas — le « X » de *maintXpert* est
+bleu. Le jeton a été retiré. L'orange reste donc purement sémantique dans l'interface (en attente,
+récurrence signalée, hors ligne).
+
+Icônes PWA regénérées depuis le pictogramme du logo par `npm run icones` (`scripts/generer-icones.mjs`,
+détourage x 53–161 / y 2–40 — au-delà de y=40 on capture le haut du grand « X » bleu du mot-symbole).
+
+---
+
 ## Points ouverts (non tranchés)
 
 | # | Point | Phase concernée |
@@ -174,4 +199,4 @@ l'expiration 8 h et par l'absence de tout contenu tiers dans l'application.
 | **O7** | Format réel du CSV DimoMaint (colonnes) — extrait à fournir. | 6 |
 | **O8** | Volume de cache : le technicien met-il en cache les 4 chaînes ou seulement la sienne ? | 3 |
 | **O9** | Format réel des matricules SABC. Le motif accepté est volontairement permissif (`[A-Z0-9_-]`, 3 à 20 caractères) faute d'exemples réels. | 2 |
-| **O10** | Charte graphique SABC : les codes couleur exacts ne sont pas publics. En attente du document de charte ou d'un fichier logo. | 3 |
+| **O10** | Version **carrée** du pictogramme MaintXpert. Le symbole actuel est un demi-engrenage large (~2,9:1), coupé par le mot-symbole : dans une icône carrée il n'occupe qu'une bande centrale. Un SVG donnerait aussi des icônes nettes — la source est un bitmap de 215 px. | 9 |

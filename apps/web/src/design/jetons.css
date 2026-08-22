@@ -10,32 +10,30 @@
   /*
    * --- Couleurs de marque ------------------------------------------------
    *
-   * Relevées À L'ŒIL sur le logo MaintXpert, faute du fichier source : ce sont
-   * des approximations à confirmer (voir docs/03-decisions.md, point O10).
-   * Dès que le PNG ou le SVG du logo est dans design/logo/, ces six valeurs
-   * sont à remplacer par les valeurs échantillonnées — et rien d'autre ne
-   * bouge, tout le reste de l'application passe par ces jetons.
+   * Échantillonnées dans design/logo/maintxpert.png par scripts/analyser-logo.mjs :
+   * classement des pixels par teinte, puis moyenne du cœur des aplats (la source
+   * est un bitmap compressé, aucune zone n'y est strictement uniforme).
    *
-   * Contrastes vérifiés par le calcul (WCAG 2.1, sur fond blanc) :
-   *   --c-primaire        6,19:1  → AA, texte courant et boutons
-   *   --c-primaire-fonce 10,58:1  → AAA
-   *   --c-marque-azure    3,92:1  → DÉCORATIF UNIQUEMENT, jamais de texte
-   *   --c-marque-orange   2,52:1  → LOGO UNIQUEMENT, jamais de texte
+   * Le logo ne comporte QUE du bleu et du bleu nuit — pas d'orange. Le « X » de
+   * maintXpert est bleu.
+   *
+   * Contrastes calculés (WCAG 2.1, sur fond blanc) :
+   *   --c-marque-bleu     4,52:1  → limite. Aplats, pictogrammes, barres de
+   *                                 graphique. Pas de texte courant.
+   *   --c-primaire        6,44:1  → AA confortable : boutons, texte bleu, bordures
+   *   --c-primaire-fonce  9,01:1  → survol, pression, surfaces denses
+   *   --c-marque-nuit    18,82:1  → texte courant (repris par --c-texte)
    */
-  --c-primaire: #1a63a8; /* bleu du pictogramme, assombri pour le contraste */
-  --c-primaire-fonce: #10406f;
-  --c-primaire-clair: #e8f0fa;
 
-  /* Azure du pictogramme. Aplats, barres de graphique, pictogrammes — pas de texte. */
-  --c-marque-azure: #2e86c8;
-  /* Bleu nuit du mot-symbole. */
-  --c-marque-nuit: #16365e;
-  /*
-   * Orange du « X ». RÉSERVÉ AU LOGO : l'orange porte déjà une sémantique dans
-   * l'interface (en attente, récurrence signalée, hors ligne). L'étendre à
-   * l'identité brouillerait les deux — voir --c-alerte plus bas.
-   */
-  --c-marque-orange: #ed8b22;
+  /* Bleu exact du logo. */
+  --c-marque-bleu: #3174da;
+  /* Bleu nuit exact du logo. */
+  --c-marque-nuit: #050f2f;
+
+  /* Bleu du logo assombri pour franchir le seuil AA sans changer de teinte. */
+  --c-primaire: #275dae;
+  --c-primaire-fonce: #1e4887;
+  --c-primaire-clair: #e9f1fc;
 
   /* --- Couleurs d'état (sémantique métier) -------------------------------- */
   --c-succes: #15803d; /* validée, synchronisé */
@@ -51,7 +49,7 @@
   --c-fond-secondaire: #f4f6f8;
   --c-bordure: #cbd5e1;
   --c-bordure-forte: #94a3b8;
-  --c-texte: #0f172a; /* contraste 16.9:1 sur blanc */
+  --c-texte: #050f2f; /* bleu nuit du logo — 18,8:1 sur blanc */
   --c-texte-secondaire: #475569; /* contraste 8.5:1 sur blanc */
   --c-texte-inverse: #ffffff;
 
@@ -97,9 +95,11 @@
  */
 @media (prefers-color-scheme: dark) {
   :root {
-    --c-primaire: #5b9bd5;
-    --c-primaire-fonce: #3d7fbc;
-    --c-primaire-clair: #16283d;
+    /* Bleu du logo éclairci : 5,98:1 sur le fond sombre. */
+    --c-primaire: #4f9fff;
+    --c-primaire-fonce: #7db5ff;
+    --c-primaire-clair: #16304f;
+    --c-marque-bleu: #4f9fff;
 
     --c-succes: #4ade80;
     --c-succes-clair: #14291d;

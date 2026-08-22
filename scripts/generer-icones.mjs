@@ -1,159 +1,117 @@
 /**
- * Génère les icônes PNG du manifeste PWA sans dépendance externe.
+ * Génère les icônes PWA à partir du logo MaintXpert.
  *
- * Icônes PROVISOIRES : aplat bleu industriel + glyphe « M » et bandeau, suffisant
- * pour rendre la PWA installable sur Android. À remplacer par l'identité visuelle
- * définitive avant la mise en service.
+ * Le logo est empilé : pictogramme (engrenage + silhouette) au-dessus,
+ * mot-symbole « maintXpert » en dessous. Une icône d'application est carrée —
+ * le mot-symbole y serait illisible. On ne garde donc que le pictogramme,
+ * détouré, centré, sur fond blanc comme dans le logo d'origine.
  *
- * Usage : npm run icones
+ * Rééchantillonnage par moyenne de boîte : la réduction depuis un bitmap de
+ * 215 px de large vers 512 px n'a rien à gagner d'un filtre plus savant, et
+ * l'agrandissement reste flou de toute façon — c'est la limite de la source.
+ * Un SVG donnerait des icônes nettes ; voir docs/03-decisions.md (O10).
+ *
+ *   npm run icones
  */
 
-import { deflateSync } from 'node:zlib';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { PNG } from 'pngjs';
 
 const RACINE = join(dirname(fileURLToPath(import.meta.url)), '..');
-const DOSSIER = join(RACINE, 'apps', 'web', 'public', 'icones');
-
-const BLEU = [0x14, 0x53, 0x9a];
-const BLANC = [0xff, 0xff, 0xff];
-
-/* --- Encodage PNG minimal (RGB 8 bits, non entrelacé) --------------------- */
-
-const TABLE_CRC = (() => {
-  const table = new Int32Array(256);
-  for (let n = 0; n < 256; n += 1) {
-    let c = n;
-    for (let k = 0; k < 8; k += 1) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-    table[n] = c;
-  }
-  return table;
-})();
-
-function crc32(buffer) {
-  let c = 0xffffffff;
-  for (const octet of buffer) c = TABLE_CRC[(c ^ octet) & 0xff] ^ (c >>> 8);
-  return (c ^ 0xffffffff) >>> 0;
-}
-
-function chunk(type, donnees) {
-  const nom = Buffer.from(type, 'ascii');
-  const longueur = Buffer.alloc(4);
-  longueur.writeUInt32BE(donnees.length);
-  const crc = Buffer.alloc(4);
-  crc.writeUInt32BE(crc32(Buffer.concat([nom, donnees])));
-  return Buffer.concat([longueur, nom, donnees, crc]);
-}
-
-function encoderPng(largeur, hauteur, pixels) {
-  const signature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
-
-  const ihdr = Buffer.alloc(13);
-  ihdr.writeUInt32BE(largeur, 0);
-  ihdr.writeUInt32BE(hauteur, 4);
-  ihdr[8] = 8; // profondeur
-  ihdr[9] = 2; // type couleur : RGB
-  ihdr[10] = 0; // compression
-  ihdr[11] = 0; // filtre
-  ihdr[12] = 0; // entrelacement
-
-  // Une ligne = 1 octet de filtre (0 = aucun) + largeur * 3 octets.
-  const brut = Buffer.alloc(hauteur * (1 + largeur * 3));
-  for (let y = 0; y < hauteur; y += 1) {
-    const debut = y * (1 + largeur * 3);
-    brut[debut] = 0;
-    pixels.copy(brut, debut + 1, y * largeur * 3, (y + 1) * largeur * 3);
-  }
-
-  return Buffer.concat([
-    signature,
-    chunk('IHDR', ihdr),
-    chunk('IDAT', deflateSync(brut, { level: 9 })),
-    chunk('IEND', Buffer.alloc(0)),
-  ]);
-}
-
-/* --- Dessin ---------------------------------------------------------------- */
+const SOURCE = join(RACINE, 'design', 'logo', 'maintxpert.png');
+const DESTINATION = join(RACINE, 'apps', 'web', 'public', 'icones');
 
 /**
- * @param taille  Côté de l'icône en pixels.
- * @param marge   Fraction du côté laissée vide en périphérie.
- *                0 pour une icône pleine, ~0.18 pour une maskable (zone sûre Android).
+ * Cadre du pictogramme dans le logo, relevé par analyse de densité puis vérifié
+ * visuellement à la loupe.
+ *
+ * Le bas est à y=40, pas plus : le « X » de maintXpert est un grand X bleu qui
+ * remonte jusque sous l'engrenage. Descendre le cadre plus bas capture le haut
+ * de cette lettre et produit des traits parasites dans l'icône.
  */
-function dessinerIcone(taille, marge) {
-  const pixels = Buffer.alloc(taille * taille * 3);
-  const poser = (x, y, [r, v, b]) => {
-    const i = (y * taille + x) * 3;
-    pixels[i] = r;
-    pixels[i + 1] = v;
-    pixels[i + 2] = b;
-  };
+const PICTOGRAMME = { x: 53, y: 2, largeur: 109, hauteur: 38 };
 
-  const bord = Math.round(taille * marge);
-  const interieur = taille - 2 * bord;
-  const rayon = Math.round(interieur * 0.18);
+const FOND = [255, 255, 255];
 
-  for (let y = 0; y < taille; y += 1) {
-    for (let x = 0; x < taille; x += 1) {
-      const dx = x - bord;
-      const dy = y - bord;
-      const dansCarre = dx >= 0 && dy >= 0 && dx < interieur && dy < interieur;
+const logo = PNG.sync.read(readFileSync(SOURCE));
 
-      // Coins arrondis.
-      let dansForme = dansCarre;
-      if (dansCarre) {
-        const cx = dx < rayon ? rayon : dx > interieur - rayon ? interieur - rayon : dx;
-        const cy = dy < rayon ? rayon : dy > interieur - rayon ? interieur - rayon : dy;
-        dansForme = (dx - cx) ** 2 + (dy - cy) ** 2 <= rayon ** 2;
+/**
+ * @param taille  Côté de l'icône produite, en pixels.
+ * @param marge   Fraction du côté laissée vide autour du pictogramme.
+ *                ~0.10 pour une icône pleine, ~0.26 pour une maskable
+ *                (zone sûre d'Android : le système peut rogner les bords).
+ */
+function composer(taille, marge) {
+  const sortie = new PNG({ width: taille, height: taille });
+
+  for (let i = 0; i < sortie.data.length; i += 4) {
+    sortie.data[i] = FOND[0];
+    sortie.data[i + 1] = FOND[1];
+    sortie.data[i + 2] = FOND[2];
+    sortie.data[i + 3] = 255;
+  }
+
+  // Le pictogramme est large et bas : c'est la largeur qui contraint.
+  const disponible = taille * (1 - 2 * marge);
+  const echelle = Math.min(disponible / PICTOGRAMME.largeur, disponible / PICTOGRAMME.hauteur);
+  const largeurCible = Math.round(PICTOGRAMME.largeur * echelle);
+  const hauteurCible = Math.round(PICTOGRAMME.hauteur * echelle);
+  const decalageX = Math.round((taille - largeurCible) / 2);
+  const decalageY = Math.round((taille - hauteurCible) / 2);
+
+  for (let y = 0; y < hauteurCible; y += 1) {
+    for (let x = 0; x < largeurCible; x += 1) {
+      // Boîte source correspondant à ce pixel de destination.
+      const x0 = PICTOGRAMME.x + (x / largeurCible) * PICTOGRAMME.largeur;
+      const x1 = PICTOGRAMME.x + ((x + 1) / largeurCible) * PICTOGRAMME.largeur;
+      const y0 = PICTOGRAMME.y + (y / hauteurCible) * PICTOGRAMME.hauteur;
+      const y1 = PICTOGRAMME.y + ((y + 1) / hauteurCible) * PICTOGRAMME.hauteur;
+
+      let r = 0, v = 0, b = 0, n = 0;
+      for (let sy = Math.floor(y0); sy < Math.max(Math.ceil(y1), Math.floor(y0) + 1); sy += 1) {
+        for (let sx = Math.floor(x0); sx < Math.max(Math.ceil(x1), Math.floor(x0) + 1); sx += 1) {
+          if (sx < 0 || sy < 0 || sx >= logo.width || sy >= logo.height) continue;
+          const i = (sy * logo.width + sx) * 4;
+          const alpha = logo.data[i + 3] / 255;
+          // Aplatir sur blanc : le logo peut porter de la transparence.
+          r += logo.data[i] * alpha + FOND[0] * (1 - alpha);
+          v += logo.data[i + 1] * alpha + FOND[1] * (1 - alpha);
+          b += logo.data[i + 2] * alpha + FOND[2] * (1 - alpha);
+          n += 1;
+        }
       }
+      if (n === 0) continue;
 
-      poser(x, y, dansForme ? BLEU : BLANC);
+      const j = ((decalageY + y) * taille + (decalageX + x)) * 4;
+      sortie.data[j] = Math.round(r / n);
+      sortie.data[j + 1] = Math.round(v / n);
+      sortie.data[j + 2] = Math.round(b / n);
+      sortie.data[j + 3] = 255;
     }
   }
 
-  // Glyphe « M » : trois traits (deux montants + un chevron), en blanc.
-  const trait = Math.max(2, Math.round(interieur * 0.1));
-  const hautM = bord + Math.round(interieur * 0.3);
-  const basM = bord + Math.round(interieur * 0.7);
-  const gaucheM = bord + Math.round(interieur * 0.28);
-  const droiteM = bord + Math.round(interieur * 0.72);
-  const milieuM = Math.round((gaucheM + droiteM) / 2);
-
-  const traitVertical = (x) => {
-    for (let y = hautM; y <= basM; y += 1) {
-      for (let e = 0; e < trait; e += 1) poser(x + e, y, BLANC);
-    }
-  };
-  const traitDiagonal = (xDepart, xArrivee) => {
-    const pas = xArrivee > xDepart ? 1 : -1;
-    const longueur = Math.abs(xArrivee - xDepart);
-    for (let i = 0; i <= longueur; i += 1) {
-      const x = xDepart + i * pas;
-      const y = hautM + Math.round((i / longueur) * (basM - hautM) * 0.55);
-      for (let e = 0; e < trait; e += 1) poser(x, Math.min(y + e, taille - 1), BLANC);
-    }
-  };
-
-  traitVertical(gaucheM);
-  traitVertical(droiteM - trait);
-  traitDiagonal(gaucheM, milieuM);
-  traitDiagonal(droiteM - trait, milieuM);
-
-  return encoderPng(taille, taille, pixels);
+  return PNG.sync.write(sortie);
 }
 
-/* --- Écriture -------------------------------------------------------------- */
+mkdirSync(DESTINATION, { recursive: true });
 
-mkdirSync(DOSSIER, { recursive: true });
-
+/*
+ * Marges volontairement faibles : le pictogramme est un demi-engrenage large et
+ * bas (rapport ~2,9:1), coupé par le mot-symbole dans le logo d'origine. Dans un
+ * cadre carré il occupe forcément une bande centrale ; réduire la marge est le
+ * seul levier disponible tant qu'il n'existe pas de version carrée du symbole.
+ */
 const fichiers = [
-  ['icone-192.png', dessinerIcone(192, 0.04)],
-  ['icone-512.png', dessinerIcone(512, 0.04)],
-  ['icone-maskable-512.png', dessinerIcone(512, 0.18)],
+  ['favicon-32.png', composer(32, 0.02)],
+  ['icone-180.png', composer(180, 0.05)],
+  ['icone-192.png', composer(192, 0.05)],
+  ['icone-512.png', composer(512, 0.05)],
+  ['icone-maskable-512.png', composer(512, 0.18)],
 ];
 
 for (const [nom, contenu] of fichiers) {
-  writeFileSync(join(DOSSIER, nom), contenu);
-  console.log(`écrit  ${join('apps', 'web', 'public', 'icones', nom)}  (${contenu.length} octets)`);
+  writeFileSync(join(DESTINATION, nom), contenu);
+  console.log(`écrit  apps/web/public/icones/${nom}  (${contenu.length} octets)`);
 }
