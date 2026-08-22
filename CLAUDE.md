@@ -175,9 +175,9 @@ npm run db:reset         # rejoue migrations + seed
 
 | Phase | Contenu | État |
 |---|---|---|
-| 1 | Setup monorepo, migrations, PWA | **en cours** |
-| 2 | Authentification A1 (JWT matricule) | à faire |
-| 3 | Cœur technicien A2–A11 + offline-first | à faire |
+| 1 | Setup monorepo, migrations, PWA | fait |
+| 2 | Authentification A1 (JWT matricule) | fait |
+| 3 | Cœur technicien A2–A12 + offline-first | fait |
 | 4 | Nomenclature & validation B1, B2 | à faire |
 | 5 | CSD & photos A7, B6 | à faire |
 | 6 | AMDEC & import CSV B4, B7 | à faire |

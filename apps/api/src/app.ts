@@ -11,6 +11,7 @@ import { env } from './config/env.js';
 import { verifierConnexion } from './db/client.js';
 import { gestionnaireErreurs, routeIntrouvable } from './middlewares/erreurs.js';
 import { routesAuth } from './modules/auth/routes.js';
+import { routesSync } from './modules/sync/routes.js';
 
 export function creerApp(): Express {
   const app = express();
@@ -36,11 +37,15 @@ export function creerApp(): Express {
   });
 
   app.use('/api/v1/auth', routesAuth);
+  app.use('/api/v1/sync', routesSync);
 
   // Les modules métier se branchent ici au fil des phases :
-  //   phase 3 — /api/v1/equipements, /api/v1/entrees-sdcr, /api/v1/interventions
-  //   phase 4 — /api/v1/nomenclature
+  //   phase 4 — /api/v1/nomenclature, /api/v1/validation
+  //   phase 5 — /api/v1/csd, /api/v1/photos
   //   ...
+  //
+  // La consultation ne passe PAS par l'API : elle lit le cache IndexedDB,
+  // alimenté par /sync/pull. Voir CLAUDE.md, « hors ligne d'abord ».
 
   app.use(routeIntrouvable);
   app.use(gestionnaireErreurs);

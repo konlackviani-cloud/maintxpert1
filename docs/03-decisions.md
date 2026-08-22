@@ -186,6 +186,58 @@ détourage x 53–161 / y 2–40 — au-delà de y=40 on capture le haut du gran
 
 ---
 
+## D14 — T1 est daté de l'arrivée devant la machine
+**Statut :** décidé le 2026-08-22 (phase 3) — **interprétation à confirmer**
+
+UC1 énumère l'ouverture de l'intervention (A8) en 4ᵉ position, après la confirmation de la cause
+(A5). Pris à la lettre, T1 serait postérieur au diagnostic et **le TTDi (T1.5 − T1) vaudrait zéro** :
+l'indicateur central du mémoire serait vide de sens.
+
+L'énumération de UC1 est donc lue comme une liste de fonctionnalités, pas comme une chronologie.
+Mise en œuvre :
+
+- **T1 est capté à la sélection de l'équipement** — l'instant où le technicien se présente devant la
+  machine (`marquerArrivee`, en `sessionStorage`).
+- **L'intervention n'est créée qu'à l'ouverture des résultats**, quand un diagnostic commence
+  vraiment : parcourir la liste des équipements ne doit pas ouvrir de chantier.
+- Elle porte alors l'horodatage d'arrivée, pas celui de sa création.
+
+Le TTDi mesure ainsi le temps réel de diagnostic. **À confirmer** : si le mémoire exige la
+chronologie littérale de UC1, il faudra l'assumer et renoncer à la mesure.
+
+---
+
+## D15 — Horodatage terrain, pas horodatage d'envoi
+**Statut :** décidé le 2026-08-22 (phase 3)
+
+Chaque mutation de la file porte `horodatage_terrain`, fixé au moment du geste. Le serveur l'utilise
+tel quel pour T1, T1.5 et T2.
+
+Sans cela, un technicien travaillant toute une nuit hors réseau verrait ses trois jalons écrasés à
+la même seconde lors de la synchronisation du matin — et tout le protocole de mesure du mémoire
+s'effondrerait.
+
+---
+
+## D16 — Idempotence de la synchronisation montante
+**Statut :** décidé le 2026-08-22 (phase 3)
+
+Table d'infrastructure `mutation_appliquee` (migration 0009), clé = UUID généré sur le terminal.
+Un rejeu renvoie le résultat d'origine sans rien réappliquer.
+
+Nécessaire car un rejeu est normal : réseau coupé après traitement mais avant l'accusé de réception.
+Sans journal, une confirmation rejouée incrémenterait deux fois `frequence_observee` — la valeur qui
+ordonne FP1 et déclenche la suggestion de défaillogramme.
+
+Deux protections complémentaires, pour les cas que le journal ne couvre pas :
+- les jalons T1.5 et T2 ne s'écrivent que si le champ est `null` (`is null` dans le `WHERE`), donc un
+  second geste avec un autre `id_local` ne peut pas réécrire un horodatage déjà posé ;
+- côté terminal, `obtenirInterventionCourante` fait sa lecture-puis-création dans **une transaction
+  IndexedDB** : deux appels concurrents ne peuvent plus ouvrir deux chantiers pour un même
+  équipement (défaut constaté et corrigé en vérification navigateur).
+
+---
+
 ## Points ouverts (non tranchés)
 
 | # | Point | Phase concernée |

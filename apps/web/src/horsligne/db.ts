@@ -1,14 +1,14 @@
 /**
  * Cache local IndexedDB (Dexie) — socle de la règle « hors ligne d'abord ».
  *
- * Deux natures de tables :
- *   - les MIROIRS des tables serveur, alimentés par la synchronisation descendante.
- *     Toute consultation (FP1, fiches CSD, dashboard) lit ici, jamais le réseau.
- *   - les FILES D'ATTENTE de synchronisation montante, volontairement SÉPARÉES
- *     pour le texte et les photos : une photo lourde ou en échec ne doit jamais
- *     retarder la remontée d'une fiche SDCR.
- *
- * Le moteur de synchronisation lui-même arrive en phase 3.
+ * Trois natures de tables :
+ *   - MIROIRS des tables serveur, alimentés par la synchronisation descendante.
+ *     Toute consultation lit ici, jamais le réseau.
+ *   - INTERVENTIONS LOCALES : le chantier en cours du technicien. Elles existent
+ *     avant d'avoir un identifiant serveur, d'où une clé locale (UUID).
+ *   - FILES D'ATTENTE montantes, volontairement SÉPARÉES pour le texte et les
+ *     photos : une photo lourde ou en échec ne doit jamais retarder la remontée
+ *     d'une fiche SDCR.
  */
 
 import Dexie, { type Table } from 'dexie';
@@ -20,39 +20,37 @@ import type {
   FicheCSD,
   Intervention,
   ModeAMDEC,
+  MutationSortante,
   TermeNomenclature,
 } from '@maintxpert/shared';
 
 /* -------------------------------------------------------------------------- */
-/* Files d'attente                                                             */
+/* Intervention en cours sur le terminal                                       */
 /* -------------------------------------------------------------------------- */
 
-/** Opérations d'écriture créées hors ligne, à rejouer contre l'API. */
-export type TypeMutation =
-  | 'creer_entree_sdcr' // A6, A10
-  | 'confirmer_cause' // A5 — incrément de frequence_observee
-  | 'ouvrir_intervention' // A8  (T1)
-  | 'confirmer_cause_intervention' // A9  (T1.5)
-  | 'cloturer_intervention'; // A11 (T2)
-
-export interface MutationEnAttente {
-  /** UUID généré localement — identifiant d'idempotence côté serveur. */
+/**
+ * Une intervention vit d'abord localement. Son `id_local` sert de référence
+ * aux jalons T1.5 et T2 tant que le serveur n'a pas attribué d'identifiant —
+ * ce qui peut prendre toute une nuit de travail hors réseau.
+ */
+export interface InterventionLocale {
   id_local: string;
-  type: TypeMutation;
-  charge: unknown;
-  /**
-   * Horodatage de l'action RÉELLE sur le terrain, pas de la synchronisation.
-   * Indispensable : le TTDi mesure le travail du technicien, pas la latence réseau.
-   */
-  horodatage_terrain: string;
-  nb_tentatives: number;
-  derniere_erreur: string | null;
+  /** Attribué par le serveur à la synchronisation. `null` tant qu'elle n'est pas remontée. */
+  id_intervention: number | null;
+  id_technicien: number;
+  id_equipement: number;
+  id_sdcr: number | null;
+  /** T1 — instant réel d'arrivée devant la machine. */
+  datetime_ouverture: string;
+  /** T1.5 */
+  datetime_cause_confirmee: string | null;
+  /** T2 */
+  datetime_cloture: string | null;
 }
 
-/** Photos compressées en attente d'envoi vers le stockage objet. */
+/** Photos compressées en attente d'envoi vers le stockage objet (phase 5). */
 export interface PhotoEnAttente {
   id_local: string;
-  /** Mutation texte à laquelle rattacher l'URL une fois la photo montée. */
   id_mutation_liee: string | null;
   cible: 'sdcr' | 'csd';
   blob: Blob;
@@ -62,7 +60,12 @@ export interface PhotoEnAttente {
   derniere_erreur: string | null;
 }
 
-/** Métadonnées du moteur de synchronisation (curseurs, dernière synchro). */
+/** Une mutation en file, augmentée du suivi des tentatives. */
+export interface MutationEnAttente extends MutationSortante {
+  nb_tentatives: number;
+  derniere_erreur: string | null;
+}
+
 export interface MetaSync {
   cle: string;
   valeur: string;
@@ -71,7 +74,7 @@ export interface MetaSync {
 /* -------------------------------------------------------------------------- */
 
 export class BaseLocale extends Dexie {
-  // Miroirs — lecture seule côté client, alimentés par la synchronisation.
+  // Miroirs — alimentés par /sync/pull.
   equipements!: Table<Equipement, number>;
   termes!: Table<TermeNomenclature, number>;
   entreesSdcr!: Table<EntreeSDCR, number>;
@@ -81,7 +84,8 @@ export class BaseLocale extends Dexie {
   interventions!: Table<Intervention, number>;
   configuration!: Table<EntreeConfiguration, string>;
 
-  // Files d'attente montantes.
+  // Travail en cours et files montantes.
+  interventionsLocales!: Table<InterventionLocale, string>;
   fileMutations!: Table<MutationEnAttente, string>;
   filePhotos!: Table<PhotoEnAttente, string>;
   metaSync!: Table<MetaSync, string>;
@@ -89,15 +93,13 @@ export class BaseLocale extends Dexie {
   constructor() {
     super('maintxpert');
 
-    this.version(1).stores({
+    this.version(2).stores({
       equipements: 'id_equipement, chaine, famille, [chaine+famille]',
 
-      // Sélection des listes déroulantes : (équipement, type), tri par usage.
       termes: 'id_terme, id_equipement, type, statut, [id_equipement+type], compteur_usage',
 
-      // FP1 s'appuie sur l'index composé [id_equipement+symptome].
-      // Le tri par fréquence est appliqué en mémoire par comparerParFrequence()
-      // pour rester strictement identique au tri serveur.
+      // FP1 s'appuie sur id_equipement ; le tri par fréquence est appliqué en
+      // mémoire par comparerParFrequence() pour rester identique au tri serveur.
       entreesSdcr:
         'id_sdcr, id_equipement, statut, symptome, [id_equipement+symptome], ' +
         'frequence_observee, id_contributeur, date_modification',
@@ -108,6 +110,7 @@ export class BaseLocale extends Dexie {
       interventions: 'id_intervention, id_technicien, id_equipement, datetime_ouverture',
       configuration: 'cle',
 
+      interventionsLocales: 'id_local, id_technicien, id_equipement, datetime_ouverture',
       fileMutations: 'id_local, type, horodatage_terrain',
       filePhotos: 'id_local, id_mutation_liee, cible',
       metaSync: 'cle',
@@ -122,6 +125,8 @@ export const baseLocale = new BaseLocale();
 /* -------------------------------------------------------------------------- */
 
 export const CLE_DERNIERE_SYNCHRO = 'derniere_synchro';
+/** Horodatage du dernier pull réussi, renvoyé au suivant pour obtenir un delta. */
+export const CLE_CURSEUR_PULL = 'curseur_pull';
 
 export async function lireMeta(cle: string): Promise<string | null> {
   const ligne = await baseLocale.metaSync.get(cle);
