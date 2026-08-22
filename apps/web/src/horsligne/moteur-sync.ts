@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Moteur de synchronisation.
  *
  * Ordre imposé : on POUSSE avant de TIRER. Sinon un instantané descendant
@@ -16,12 +16,14 @@ import {
 } from '@maintxpert/shared';
 
 import { ErreurReseau, appelerApi } from '../lib/client-api.js';
+import { envoyerPhotos, reattribuerPhotoSDCR } from './file-photos.js';
 import {
   CLE_CURSEUR_PULL,
   CLE_DERNIERE_SYNCHRO,
   baseLocale,
   ecrireMeta,
   lireMeta,
+  type MutationEnAttente,
 } from './db.js';
 
 /** Au-delà, une mutation est considérée comme définitivement en échec. */
@@ -29,6 +31,8 @@ const TENTATIVES_MAX = 5;
 
 export interface BilanSync {
   poussees: number;
+  photosEnvoyees: number;
+  photosDifferees: number;
   refusees: number;
   recues: number;
   /** Messages des mutations refusées, à présenter au technicien. */
@@ -63,7 +67,8 @@ async function pousser(bilan: BilanSync): Promise<void> {
 
     for (const resultat of reponse.resultats) {
       if (resultat.statut === 'applique' || resultat.statut === 'deja_applique') {
-        await reconcilier(resultat.id_local, resultat.resultat);
+        const mutation = lot.find((m) => m.id_local === resultat.id_local);
+        if (mutation) await reconcilier(resultat.id_local, resultat.resultat, mutation);
         await baseLocale.fileMutations.delete(resultat.id_local);
         bilan.poussees += 1;
         continue;
@@ -78,20 +83,61 @@ async function pousser(bilan: BilanSync): Promise<void> {
   }
 }
 
-/** Inscrit l'identifiant serveur sur l'intervention locale correspondante. */
+/**
+ * Inscrit les identifiants attribués par le serveur dans le cache local :
+ * sur l'intervention, et sur la photo qui attendait sa fiche.
+ */
 async function reconcilier(
   idLocal: string,
   resultat: { id_sdcr?: number; id_intervention?: number } | undefined,
+  mutation: MutationEnAttente,
 ): Promise<void> {
-  if (resultat?.id_intervention === undefined) return;
-
-  const intervention = await baseLocale.interventionsLocales.get(idLocal);
-  if (intervention && intervention.id_intervention === null) {
-    await baseLocale.interventionsLocales.put({
-      ...intervention,
-      id_intervention: resultat.id_intervention,
-    });
+  if (resultat?.id_intervention !== undefined) {
+    const intervention = await baseLocale.interventionsLocales.get(idLocal);
+    if (intervention && intervention.id_intervention === null) {
+      await baseLocale.interventionsLocales.put({
+        ...intervention,
+        id_intervention: resultat.id_intervention,
+      });
+    }
   }
+
+  // Une fiche créée hors ligne portait un identifiant provisoire négatif. La
+  // photo prise avec elle l'attendait : elle peut maintenant partir.
+  if (resultat?.id_sdcr !== undefined && mutation.type === 'creer_entree_sdcr') {
+    const provisoire = await trouverIdProvisoire(mutation);
+    if (provisoire !== null) {
+      await reattribuerPhotoSDCR(provisoire, resultat.id_sdcr);
+      await remplacerFicheProvisoire(provisoire, resultat.id_sdcr);
+    }
+  }
+}
+
+/**
+ * Retrouve l'identifiant provisoire de la fiche créée par cette mutation.
+ * Le rapprochement se fait sur (équipement, symptôme, défaut) : la charge de la
+ * mutation ne transporte pas l'identifiant local négatif.
+ */
+async function trouverIdProvisoire(mutation: MutationEnAttente): Promise<number | null> {
+  const charge = mutation.charge as { id_equipement: number; symptome: string; defaut: string };
+  const candidates = await baseLocale.entreesSdcr.where('id_sdcr').below(0).toArray();
+
+  const fiche = candidates.find(
+    (f) =>
+      f.id_equipement === charge.id_equipement &&
+      f.symptome === charge.symptome &&
+      f.defaut === charge.defaut,
+  );
+  return fiche?.id_sdcr ?? null;
+}
+
+/** Remplace la fiche provisoire par son identifiant serveur dans le cache. */
+async function remplacerFicheProvisoire(provisoire: number, idServeur: number): Promise<void> {
+  const fiche = await baseLocale.entreesSdcr.get(provisoire);
+  if (!fiche) return;
+
+  await baseLocale.entreesSdcr.delete(provisoire);
+  await baseLocale.entreesSdcr.put({ ...fiche, id_sdcr: idServeur });
 }
 
 /** Marque une tentative infructueuse sur toute la file. */
@@ -131,6 +177,7 @@ async function tirer(bilan: BilanSync): Promise<void> {
       baseLocale.entreesSdcr,
       baseLocale.configuration,
       baseLocale.interventions,
+      baseLocale.fichesCsd,
     ],
     async () => {
       // Référentiels : toujours complets, donc remplacés en bloc. Un terme
@@ -144,6 +191,9 @@ async function tirer(bilan: BilanSync): Promise<void> {
       await baseLocale.configuration.bulkPut(instantane.configuration);
       await baseLocale.entreesSdcr.bulkPut(instantane.entrees_sdcr);
       await baseLocale.interventions.bulkPut(instantane.interventions);
+      // Fiches CSD toujours complètes : A7 doit fonctionner sans réseau.
+      await baseLocale.fichesCsd.clear();
+      await baseLocale.fichesCsd.bulkPut(instantane.fiches_csd);
     },
   );
 
@@ -164,7 +214,15 @@ let enCours = false;
  * Le bilan retourné alimente l'indicateur de l'interface.
  */
 export async function synchroniser(): Promise<BilanSync> {
-  const bilan: BilanSync = { poussees: 0, refusees: 0, recues: 0, refus: [], erreur: null };
+  const bilan: BilanSync = {
+    poussees: 0,
+    photosEnvoyees: 0,
+    photosDifferees: 0,
+    refusees: 0,
+    recues: 0,
+    refus: [],
+    erreur: null,
+  };
 
   // Un seul cycle à la fois : le déclencheur périodique et l'événement
   // « retour en ligne » peuvent survenir en même temps.
@@ -176,6 +234,12 @@ export async function synchroniser(): Promise<BilanSync> {
 
   try {
     await pousser(bilan);
+    // Les photos partent APRÈS le texte : une fiche créée hors ligne doit
+    // avoir reçu son identifiant serveur avant que sa photo ne puisse s'y
+    // rattacher.
+    const photos = await envoyerPhotos();
+    bilan.photosEnvoyees = photos.envoyees;
+    bilan.photosDifferees = photos.differees;
     await tirer(bilan);
   } catch (erreur) {
     bilan.erreur =
@@ -191,3 +255,4 @@ export async function synchroniser(): Promise<BilanSync> {
 
   return bilan;
 }
+

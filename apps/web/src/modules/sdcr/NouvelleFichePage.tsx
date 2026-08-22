@@ -1,4 +1,4 @@
-/**
+﻿/**
  * A6 / A10 — documenter une nouvelle fiche SDCR.
  *
  * Quatre niveaux dans l'ordre du modèle : symptôme → défaut → cause → remède.
@@ -23,6 +23,8 @@ import {
   IconeValider,
 } from '../../composants/ui/index.js';
 import { creerFiche, type SaisieFiche } from '../../horsligne/actions.js';
+import { enfilerPhotoSDCR } from '../../horsligne/file-photos.js';
+import { ChampPhoto, type PhotoChoisie } from '../../medias/ChampPhoto.js';
 import { lireEquipement, listerTermes } from '../../horsligne/depots.js';
 import { useSession } from '../auth/contexte-session.js';
 import { obtenirInterventionCourante } from '../interventions/intervention-courante.js';
@@ -248,6 +250,7 @@ export function NouvelleFichePage(): JSX.Element {
   });
 
   const [selecteurOuvert, setSelecteurOuvert] = useState<TypeTerme | null>(null);
+  const [photo, setPhoto] = useState<PhotoChoisie | null>(null);
   const [enCours, setEnCours] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
 
@@ -274,6 +277,10 @@ export function NouvelleFichePage(): JSX.Element {
       };
 
       const idProvisoire = await creerFiche(saisie, utilisateur.id_utilisateur, intervention.id_local);
+
+      // La photo part dans SA file : elle attendra que la fiche ait reçu son
+      // identifiant serveur, sans retarder la remontée du texte.
+      if (photo) await enfilerPhotoSDCR(photo.blob, idProvisoire);
 
       naviguer(`/diagnostic/fiche/${idProvisoire}`, {
         replace: true,
@@ -305,6 +312,8 @@ export function NouvelleFichePage(): JSX.Element {
             onOuvrir={() => setSelecteurOuvert(niveau)}
           />
         ))}
+
+        <ChampPhoto photo={photo} onChange={setPhoto} />
 
         <div
           style={{
@@ -360,3 +369,4 @@ export function NouvelleFichePage(): JSX.Element {
     </div>
   );
 }
+

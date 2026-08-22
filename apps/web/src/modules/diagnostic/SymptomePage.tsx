@@ -51,6 +51,28 @@ export function SymptomePage(): JSX.Element {
         titre="Que constatez-vous ?"
         sousTitre={`${chaine} · ${equipement?.nom ?? '…'}`}
         retour={`/diagnostic/${chaine}`}
+        action={
+          // A7 — l'état de référence est utile AVANT de nommer le symptôme :
+          // c'est en comparant à la configuration nominale que le technicien
+          // identifie ce qui cloche.
+          <button
+            type="button"
+            onClick={() => naviguer(`/diagnostic/${chaine}/${id}/csd`)}
+            style={{
+              minHeight: 'var(--cible-tactile)',
+              padding: '0 14px',
+              border: '1.5px solid var(--c-bordure)',
+              borderRadius: 'var(--rayon)',
+              background: 'var(--c-fond)',
+              fontSize: 14,
+              fontWeight: 600,
+              color: 'var(--c-primaire)',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Fiche CSD
+          </button>
+        }
       />
 
       <div style={{ padding: '14px 16px', borderBottom: '1.5px solid var(--c-bordure)' }}>

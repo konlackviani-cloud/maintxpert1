@@ -277,6 +277,58 @@ sans savoir pourquoi. Voir point ouvert O11.
 
 ---
 
+## D19 — Dépôt des photos : disque en attendant le stockage objet Supabase
+**Statut :** décidé le 2026-08-22 (phase 5) — **écart temporaire**
+
+Le cahier des charges prévoit le **stockage objet Supabase**. Tant que l'instance n'est pas
+provisionnée, `apps/api/src/modules/photos/depot.ts` écrit sur disque
+(`STOCKAGE_PHOTOS`, défaut `./donnees/photos`).
+
+Le reste de l'application ne voit qu'une interface — `deposer` / `lire` / `supprimer`. Basculer
+consistera à écrire un second adaptateur ; aucun appelant ne change.
+
+Deux points de sécurité tenus dès maintenant :
+- le nom de fichier est un **UUID généré côté serveur**, jamais celui fourni par le client — un nom
+  venu du terminal pourrait contenir `../` ;
+- toute lecture est **contrainte au dossier de stockage** (`resolve` puis vérification du préfixe).
+
+Les photos sont servies **authentifiées** : elles montrent l'intérieur des machines de l'usine.
+
+---
+
+## D20 — Suppression physique des photos remplacées
+**Statut :** décidé le 2026-08-22 (phase 5)
+
+Seule exception à l'interdiction de supprimer : quand une photo de référence CSD est remplacée,
+l'ancienne est effacée du dépôt.
+
+L'interdiction porte sur les **données métier** — fiches, termes — pour l'auditabilité. Une photo
+qui n'est plus référencée par aucune ligne n'apporte aucune traçabilité, seulement du stockage
+occupé.
+
+---
+
+## D21 — Pipeline photo vérifié contre les seuils chiffrés
+**Statut :** vérifié le 2026-08-22 (phase 5)
+
+Mesures réelles dans le navigateur, `apps/web/src/medias/compression-photo.ts` :
+
+| Source | Sortie | Passes | Poids final |
+|---|---|---|---|
+| 4000 × 3000, 35,9 Mo | 1600 × 1200 WebP | 0,78 puis 0,70 | 369 Ko |
+| 3000 × 4000 (portrait) | 1200 × 1600 WebP | 0,78 puis 0,70 | 369 Ko |
+| 800 × 600 | inchangée | 0,78 seule | 250 Ko |
+
+La compression a lieu **à la sélection**, pas à l'envoi : le technicien voit le poids réel de ce qui
+partira, et une photo de 36 Mo ne séjourne jamais dans IndexedDB.
+
+La file de photos est **séparée** de celle du texte. Une photo en échec au fond d'un bâtiment ne doit
+pas bloquer la remontée des jalons d'intervention qui la suivent. Les photos partent **après** le
+texte : une fiche créée hors ligne doit avoir reçu son identifiant serveur avant que sa photo puisse
+s'y rattacher.
+
+---
+
 ## Points ouverts (non tranchés)
 
 | # | Point | Phase concernée |

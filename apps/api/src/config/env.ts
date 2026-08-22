@@ -16,6 +16,13 @@ const schema = z.object({
   /** Secret de signature des JWT. Utilisé en phase 2 (A1). */
   JWT_SECRET: z.string().min(32, 'JWT_SECRET doit faire au moins 32 caractères'),
 
+  /**
+   * Dossier de stockage des photos.
+   * Implémentation par défaut en attendant le stockage objet Supabase
+   * (voir apps/api/src/modules/photos/depot.ts).
+   */
+  STOCKAGE_PHOTOS: z.string().min(1).default('./donnees/photos'),
+
   /** Origines autorisées pour CORS, séparées par des virgules. */
   ORIGINES_AUTORISEES: z
     .string()

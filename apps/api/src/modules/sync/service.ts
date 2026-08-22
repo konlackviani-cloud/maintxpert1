@@ -30,6 +30,7 @@ import {
   listerInterventions,
   listerTermesActifs,
 } from '../../db/requetes/catalogue.js';
+import { listerFichesCSD } from '../../db/requetes/csd.js';
 import {
   cloturerIntervention,
   confirmerCause,
@@ -56,12 +57,15 @@ export async function construireInstantane(
 ): Promise<InstantaneSync> {
   const horodatage = new Date().toISOString();
 
-  const [equipements, termes, configuration, entrees, interventions] = await Promise.all([
+  const [equipements, termes, configuration, entrees, interventions, fichesCsd] = await Promise.all([
     listerEquipements(),
     listerTermesActifs(),
     listerConfiguration(),
     listerEntreesSDCR(idUtilisateur, depuis),
     listerInterventions(idUtilisateur, depuis),
+    // Toujours en entier : une fiche par équipement, quelques dizaines de lignes.
+    // A7 doit fonctionner sans réseau, donc elles ne peuvent pas manquer du cache.
+    listerFichesCSD(),
   ]);
 
   return {
@@ -71,6 +75,7 @@ export async function construireInstantane(
     termes,
     configuration,
     entrees_sdcr: entrees,
+    fiches_csd: fichesCsd,
     interventions,
   };
 }

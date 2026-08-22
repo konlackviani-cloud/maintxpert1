@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Contrat de synchronisation entre la PWA et l'API.
  *
  * Deux sens, volontairement dissymétriques :
@@ -12,6 +12,7 @@ import type {
   EntreeConfiguration,
   EntreeSDCR,
   Equipement,
+  FicheCSD,
   Intervention,
   TermeNomenclature,
 } from './entites.js';
@@ -28,6 +29,8 @@ export interface InstantaneSync {
   equipements: Equipement[];
   termes: TermeNomenclature[];
   entrees_sdcr: EntreeSDCR[];
+  /** Fiches CSD — descendues en entier : A7 doit fonctionner hors ligne. */
+  fiches_csd: FicheCSD[];
   configuration: EntreeConfiguration[];
   interventions: Intervention[];
 }
@@ -114,3 +117,4 @@ export interface ResultatMutation {
 export interface ReponsePush {
   resultats: ResultatMutation[];
 }
+

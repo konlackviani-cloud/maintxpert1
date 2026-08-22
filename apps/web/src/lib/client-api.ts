@@ -73,8 +73,13 @@ async function lireErreur(reponse: Response): Promise<ErreurApi> {
 }
 
 interface Options {
-  methode?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+  methode?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   corps?: unknown;
+  /**
+   * Corps binaire — envoi de photo. Exclusif de `corps` : le type MIME réel
+   * est porté par l'en-tête, il n'y a ni JSON ni multipart.
+   */
+  corpsBinaire?: { donnees: Blob; typeMime: string };
   /** `false` pour les routes publiques (connexion, santé). */
   authentifie?: boolean;
   delaiMs?: number;
@@ -106,7 +111,7 @@ async function tenterRafraichissement(): Promise<boolean> {
 }
 
 export async function appelerApi<T>(chemin: string, options: Options = {}): Promise<T> {
-  const { methode = 'GET', corps, authentifie = true, delaiMs = 15_000 } = options;
+  const { methode = 'GET', corps, corpsBinaire, authentifie = true, delaiMs = 15_000 } = options;
 
   // Rafraîchissement préventif : évite un aller-retour 401 systématique en
   // début de quart, quand le jeton de la veille vient d'expirer.
@@ -119,18 +124,25 @@ export async function appelerApi<T>(chemin: string, options: Options = {}): Prom
     const minuterie = setTimeout(() => abandon.abort(), delaiMs);
 
     const entetes: Record<string, string> = {};
-    if (corps !== undefined) entetes['content-type'] = 'application/json';
+    if (corpsBinaire) entetes['content-type'] = corpsBinaire.typeMime;
+    else if (corps !== undefined) entetes['content-type'] = 'application/json';
 
     if (authentifie) {
       const jeton = lireJetonAcces();
       if (jeton) entetes['authorization'] = `Bearer ${jeton}`;
     }
 
+    const charge = corpsBinaire
+      ? corpsBinaire.donnees
+      : corps === undefined
+        ? undefined
+        : JSON.stringify(corps);
+
     try {
       return await fetch(`${BASE}${chemin}`, {
         method: methode,
         headers: entetes,
-        body: corps === undefined ? undefined : JSON.stringify(corps),
+        body: charge,
         signal: abandon.signal,
       });
     } finally {

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Accès API du responsable maintenance (B1, B2).
  *
  * EXCEPTION ASSUMÉE à la règle « hors ligne d'abord » : ces écrans appellent le
@@ -19,6 +19,7 @@ import type {
   ContributionAValider,
   CorrectionsFiche,
   DetailContribution,
+  FicheCSD,
   TermeGere,
   TermeNomenclature,
   TypeTerme,
@@ -96,3 +97,29 @@ export const fusionnerTermes = (idSource: number, idCible: number): Promise<void
     methode: 'POST',
     corps: { id_terme_cible: idCible },
   });
+
+/* -------------------------------------------------------------------------- */
+/* B6 — fiches CSD                                                             */
+/* -------------------------------------------------------------------------- */
+
+export const chargerFicheCSD = (idEquipement: number): Promise<FicheCSD> =>
+  appelerApi(`/csd/${idEquipement}`);
+
+export const enregistrerFicheCSD = (idEquipement: number, description: string): Promise<FicheCSD> =>
+  appelerApi(`/csd/${idEquipement}`, { methode: 'PUT', corps: { description } });
+
+/**
+ * Envoi direct, sans passer par la file de photos : le responsable est sur un
+ * poste connecté et attend une confirmation immédiate.
+ */
+export const envoyerPhotoCSD = (
+  idEquipement: number,
+  donnees: Blob,
+  typeMime: string,
+): Promise<{ photo_url: string }> =>
+  appelerApi(`/photos/csd/${idEquipement}`, {
+    methode: 'POST',
+    corpsBinaire: { donnees, typeMime },
+    delaiMs: 60_000,
+  });
+

@@ -28,3 +28,6 @@ design/maquettes/maquettes-*.html
 donnees-dimomaint/
 *.csv
 !docs/exemples/*.csv
+
+# Photos déposées en développement
+apps/api/donnees/

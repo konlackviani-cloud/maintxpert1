@@ -1,4 +1,4 @@
-/** Coquille applicative : routage, session, synchronisation de fond. */
+﻿/** Coquille applicative : routage, session, synchronisation de fond. */
 
 import { Navigate, Route, BrowserRouter as Routeur, Routes } from 'react-router-dom';
 
@@ -10,6 +10,8 @@ import { EquipementPage } from './modules/diagnostic/EquipementPage.js';
 import { ResultatsPage } from './modules/diagnostic/ResultatsPage.js';
 import { SymptomePage } from './modules/diagnostic/SymptomePage.js';
 import { FichePage } from './modules/sdcr/FichePage.js';
+import { FicheCSDPage } from './modules/csd/FicheCSDPage.js';
+import { CsdPage } from './modules/pilotage/CsdPage.js';
 import { FileValidationPage } from './modules/pilotage/FileValidationPage.js';
 import { NomenclaturePage } from './modules/pilotage/NomenclaturePage.js';
 import { MesContributionsPage } from './modules/sdcr/MesContributionsPage.js';
@@ -63,6 +65,10 @@ export function App(): JSX.Element {
             path="/diagnostic/:chaine/:idEquipement/nouvelle-fiche"
             element={<Technicien><NouvelleFichePage /></Technicien>}
           />
+          <Route
+            path="/diagnostic/:chaine/:idEquipement/csd"
+            element={<Technicien><FicheCSDPage /></Technicien>}
+          />
           <Route path="/diagnostic/fiche/:idSdcr" element={<Technicien><FichePage /></Technicien>} />
           <Route path="/mes-contributions" element={<Technicien><MesContributionsPage /></Technicien>} />
 
@@ -76,6 +82,7 @@ export function App(): JSX.Element {
             element={<Responsable><NomenclaturePage /></Responsable>}
           />
           {/* Le tableau de bord (B5) arrive en phase 7 ; d'ici là, la file fait l'accueil. */}
+          <Route path="/pilotage/csd" element={<Responsable><CsdPage /></Responsable>} />
           <Route path="/pilotage" element={<Navigate to="/pilotage/validation" replace />} />
 
           <Route path="/" element={<Racine />} />
@@ -85,3 +92,4 @@ export function App(): JSX.Element {
     </Routeur>
   );
 }
+

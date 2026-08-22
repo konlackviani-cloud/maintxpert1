@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cadre des écrans responsable : navigation horizontale persistante.
  * Densité bureau — texte à 15 px, l'utilisateur est assis et à la souris.
  */
@@ -12,6 +12,7 @@ import { useSession } from '../auth/contexte-session.js';
 const ONGLETS: { chemin: string; libelle: string }[] = [
   { chemin: '/pilotage/validation', libelle: 'Validation' },
   { chemin: '/pilotage/nomenclature', libelle: 'Nomenclature' },
+  { chemin: '/pilotage/csd', libelle: 'Fiches CSD' },
 ];
 
 function initiales(prenom = '', nom = ''): string {
@@ -150,3 +151,4 @@ export function CadreResponsable({
     </div>
   );
 }
+

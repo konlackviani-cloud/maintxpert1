@@ -16,6 +16,7 @@ import {
   rechercher,
   type EntreeSDCR,
   type Equipement,
+  type FicheCSD,
   type TermeNomenclature,
   type TypeTerme,
 } from '@maintxpert/shared';
@@ -159,6 +160,20 @@ export async function listerMesContributions(idContributeur: number): Promise<En
     .toArray();
 
   return fiches.sort((a, b) => (a.date_creation < b.date_creation ? 1 : -1));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Fiches CSD — A7                                                             */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Fiche CSD d'un équipement, depuis le cache.
+ * `null` distingue « pas de fiche » de `undefined` « pas encore lu » : l'écran
+ * doit afficher un état vide dans le premier cas, un chargement dans le second.
+ */
+export async function lireFicheCSD(idEquipement: number): Promise<FicheCSD | null> {
+  const fiches = await baseLocale.fichesCsd.where('id_equipement').equals(idEquipement).toArray();
+  return fiches[0] ?? null;
 }
 
 /* -------------------------------------------------------------------------- */

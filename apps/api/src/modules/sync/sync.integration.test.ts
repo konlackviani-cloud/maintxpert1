@@ -79,6 +79,10 @@ beforeEach(() => {
 
     create table configuration (cle varchar(50) primary key, valeur varchar(255) not null, description text not null);
 
+    create table fiche_csd (
+      id_csd serial primary key, id_equipement integer not null unique,
+      description text not null, photo_url varchar(255));
+
     create table mutation_appliquee (
       id_local uuid primary key, type varchar(60) not null, id_utilisateur integer not null,
       resultat jsonb, applique_le timestamptz not null default now());
@@ -92,6 +96,8 @@ beforeEach(() => {
     insert into terme_nomenclature values (102,'Nettoyage non fait','cause',10,'actif',3,null);
     insert into terme_nomenclature values (103,'Nettoyer le capteur','remede',10,'actif',3,null);
     insert into configuration values ('seuil_recurrence','3','seuil');
+    insert into fiche_csd (id_equipement, description, photo_url)
+      values (10, 'Pression de soutirage 2,4 bar. Seuil capteur 65 %.', 'photo-ref.webp');
     insert into entree_sdcr (id_equipement, symptome, defaut, cause, remede,
                              frequence_observee, via_nomenclature, statut, id_contributeur, id_valideur)
       values (10,'Arrêt intempestif','Capteur encrassé','Nettoyage non fait','Nettoyer le capteur',
@@ -369,6 +375,17 @@ describe('instantané descendant', () => {
     expect(instantane.equipements).toHaveLength(1);
     expect(instantane.termes).toHaveLength(4);
     expect(instantane.partiel).toBe(false);
+  });
+
+  it('embarque toujours les fiches CSD — A7 doit fonctionner hors ligne', async () => {
+    const complet = await construireInstantane(TECHNICIEN);
+    expect(complet.fiches_csd).toHaveLength(1);
+    expect(complet.fiches_csd[0]!.photo_url).toBe('photo-ref.webp');
+
+    // Même sur un instantané partiel : une fiche CSD absente du cache rendrait
+    // l'écran A7 vide sans réseau, alors que rien n'a changé côté serveur.
+    const partiel = await construireInstantane(TECHNICIEN, '2030-01-01T00:00:00.000Z');
+    expect(partiel.fiches_csd).toHaveLength(1);
   });
 
   it('se déclare partiel quand un curseur est fourni', async () => {

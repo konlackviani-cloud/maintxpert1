@@ -48,11 +48,17 @@ export interface InterventionLocale {
   datetime_cloture: string | null;
 }
 
-/** Photos compressées en attente d'envoi vers le stockage objet (phase 5). */
+/** Photo compressée en attente d'envoi. */
 export interface PhotoEnAttente {
   id_local: string;
   id_mutation_liee: string | null;
   cible: 'sdcr' | 'csd';
+  /**
+   * `id_sdcr` pour une fiche, `id_equipement` pour une CSD.
+   * Négatif tant que la fiche SDCR n'a pas d'identifiant serveur : l'envoi est
+   * alors différé, puis réattribué à la réconciliation.
+   */
+  id_cible: number;
   blob: Blob;
   type_mime: string;
   taille_octets: number;
@@ -114,6 +120,11 @@ export class BaseLocale extends Dexie {
       fileMutations: 'id_local, type, horodatage_terrain',
       filePhotos: 'id_local, id_mutation_liee, cible',
       metaSync: 'cle',
+    });
+
+    // v3 : la file de photos porte l'identifiant de sa cible (phase 5).
+    this.version(3).stores({
+      filePhotos: 'id_local, cible, id_cible, [cible+id_cible]',
     });
   }
 }
