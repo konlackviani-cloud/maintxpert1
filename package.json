@@ -1,0 +1,31 @@
+{
+  "name": "maintxpert",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PWA de diagnostic guidé des défaillances industrielles (modèle SDCR) — SABC, usine Terrain Court",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace @maintxpert/api",
+    "dev:web": "npm run dev --workspace @maintxpert/web",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "icones": "node scripts/generer-icones.mjs",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:migrations": "supabase migration list"
+  },
+  "devDependencies": {
+    "supabase": "^2.15.8",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

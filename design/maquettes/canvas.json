@@ -1,0 +1,98 @@
+{
+  "pages": [
+    { "id": "page-1", "name": "Technicien — mobile" },
+    { "id": "page-2", "name": "Responsable — bureau" }
+  ],
+  "artboards": [
+    { "file": "Main.dc.html", "title": "1 · Connexion", "page": "page-1", "x": 0, "y": 0, "w": 375, "h": 812 },
+    { "file": "Chaine.dc.html", "title": "2 · Accueil & chaîne", "page": "page-1", "x": 495, "y": 0, "w": 375, "h": 812 },
+    { "file": "Equipement.dc.html", "title": "3 · Équipement", "page": "page-1", "x": 990, "y": 0, "w": 375, "h": 812 },
+    { "file": "Symptome.dc.html", "title": "4 · Symptôme", "page": "page-1", "x": 1485, "y": 0, "w": 375, "h": 812 },
+    { "file": "Resultats.dc.html", "title": "5 · Résultats (A4)", "page": "page-1", "x": 1980, "y": 0, "w": 375, "h": 812 },
+    { "file": "Fiche.dc.html", "title": "6 · Fiche & jalons", "page": "page-1", "x": 2475, "y": 0, "w": 375, "h": 812 },
+    { "file": "ResultatsNuit.dc.html", "title": "Mode nuit — résultats", "page": "page-1", "x": 2970, "y": 0, "w": 375, "h": 812 },
+
+    { "file": "FicheCSD.dc.html", "title": "Fiche CSD (A7)", "page": "page-1", "x": 990, "y": 1000, "w": 375, "h": 812 },
+    { "file": "AucunResultat.dc.html", "title": "5b · Aucun résultat", "page": "page-1", "x": 1980, "y": 1000, "w": 375, "h": 812 },
+    { "file": "NouvelleFiche.dc.html", "title": "6b · Nouvelle fiche", "page": "page-1", "x": 2475, "y": 1000, "w": 375, "h": 812 },
+
+    { "file": "Dashboard.dc.html", "title": "B5 · Tableau de bord", "page": "page-2", "x": 0, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Validation.dc.html", "title": "B1 · File de validation", "page": "page-2", "x": 1560, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Defaillogramme.dc.html", "title": "B8 · Défaillogramme", "page": "page-2", "x": 3120, "y": 0, "w": 1440, "h": 900 }
+  ],
+  "annotations": [
+    {
+      "id": "note-parcours",
+      "page": "page-1",
+      "x": 0,
+      "y": -190,
+      "w": 700,
+      "text": "PARCOURS NOMINAL UC1 — rangée du haut\n\nConnexion → chaîne → équipement → symptôme → résultats → fiche.\nQuatre appuis entre l'arrivée du technicien et la liste des causes probables, sans une seule frappe au clavier."
+    },
+    {
+      "id": "note-defaut",
+      "page": "page-1",
+      "x": 1980,
+      "y": -190,
+      "w": 400,
+      "text": "LE DÉFAUT EST LE HÉROS DE LA CARTE\n\nLe technicien lit la carte pour répondre à une seule question : « est-ce bien ce défaut que je constate ? »\nD'où le défaut en 19px gras, la cause et le remède en retrait, et la fréquence en bandeau coloré."
+    },
+    {
+      "id": "note-autre",
+      "page": "page-1",
+      "x": 1485,
+      "y": 860,
+      "w": 400,
+      "text": "L'ÉCHAPPATOIRE EST DÉLIBÉRÉMENT DISCRÈTE\n\n« Autre — le décrire moi-même » est en pointillés, en bas de liste, avec un avertissement, et à 60 px au lieu de 72.\nC'est le taux de recours à la nomenclature non contrôlée que suit l'indicateur B5 : le design doit décourager sans interdire."
+    },
+    {
+      "id": "note-jalons",
+      "page": "page-1",
+      "x": 2475,
+      "y": 860,
+      "w": 400,
+      "text": "JALONS T1 / T1.5 / T2\n\nL'écran 6 porte un interrupteur en haut de l'artboard pour parcourir les trois états.\nLe TTDi (T1 → T1.5) s'affiche en clair au technicien : la mesure du mémoire devient un retour utile sur le terrain, pas une surveillance cachée."
+    },
+    {
+      "id": "note-ergonomie",
+      "page": "page-1",
+      "x": 0,
+      "y": 860,
+      "w": 700,
+      "text": "ERGONOMIE GANTS & NUIT\n\n· Rangées de liste 72 px, action principale 72 px, action secondaire 60 px, jamais moins de 56 px.\n· Action principale toujours ancrée en bas — zone du pouce en tenue une main.\n· Bandeau de connexion permanent : le technicien sait toujours si ce qu'il lit vient du cache.\n· Texte courant 17 px, plancher absolu 13 px. Libellés en capitales espacées (11 px / 700 / 0,9 px) pour la lecture rapide sous éclairage d'usine.\n· IBM Plex Sans / Mono : les codes machine (CH02, TC-2841, 12×, horaires) passent en chasse fixe pour ne pas se confondre avec le texte."
+    },
+    {
+      "id": "note-bureau",
+      "page": "page-2",
+      "x": 0,
+      "y": -230,
+      "w": 760,
+      "text": "MÊME APPLICATION, PAS UNE SECONDE VERSION\n\nMaintXpert est une PWA : ces écrans et ceux du technicien sont le même code, servi au même endroit. Le responsable ouvre simplement l'application dans Chrome ou Edge sur son PC — et peut l'installer comme application de bureau.\n\nCe qui change au format bureau : la densité (texte courant 15 px au lieu de 17, l'utilisateur est assis et à la souris), la navigation horizontale persistante, et surtout les mises en page multi-colonnes qu'un téléphone ne peut pas rendre — Pareto + récurrences côte à côte, file de validation + détail, chaîne causale déployée sur toute la largeur.\n\nMaquetté en 1440 × 900. Rien d'essentiel ne descend sous 768 px de haut, pour rester utilisable sur les postes en 1366 × 768 encore courants en usine — à confirmer."
+    },
+    {
+      "id": "note-pareto",
+      "page": "page-2",
+      "x": 0,
+      "y": 960,
+      "w": 700,
+      "text": "TABLEAU DE BORD (B5, UC4)\n\nLe Pareto répond à la question du responsable : sur quoi agir en premier. La ligne de cumul et le seuil 80 % rendent la réponse lisible sans calcul — ici 4 causes sur 7 expliquent 82 % des arrêts.\n\nÀ droite, les récurrences signalées (FP5, seuil 3). Le bouton dit « Ouvrir un défaillogramme », jamais « défaillogramme suggéré, créé automatiquement » : l'initiative reste au responsable, c'est écrit dans le cahier des charges.\n\nLa tuile ambre « nomenclature libre 18 % » est l'indicateur B5 : le taux de recours à la saisie hors nomenclature, avec son objectif."
+    },
+    {
+      "id": "note-validation",
+      "page": "page-2",
+      "x": 1560,
+      "y": 960,
+      "w": 700,
+      "text": "FILE DE VALIDATION (B1, UC2)\n\nLe cahier des charges dit « valider / corriger le libellé / rejeter ». La correction est ici concrète : chaque niveau saisi en texte libre porte un sélecteur « Rattacher à un terme… ». C'est le moment où la nomenclature se construit vraiment.\n\nLe panneau « fiches proches déjà validées » traite le doublon : même triplet défaut/cause/remède sous un symptôme différent. Fusionner incrémente la fréquence existante au lieu de diluer la base.\n\nÀ trancher (point ouvert O5) : « Renvoyer en correction » renvoie-t-il au technicien, ou le responsable corrige-t-il lui-même avant de valider ? Les deux boutons coexistent ici en attendant votre arbitrage."
+    },
+    {
+      "id": "note-defaillogramme",
+      "page": "page-2",
+      "x": 3120,
+      "y": 960,
+      "w": 700,
+      "text": "DÉFAILLOGRAMME (B8, UC3)\n\nTopologie FIXE : deux branches contributives, une convergence, une cause intermédiaire, une cause première. Aucun bouton n'ajoute de branche — l'éditeur graphique à topologie libre est explicitement hors périmètre v1.0.\n\nLe bandeau du bas dit à quoi sert le niveau 2, en une phrase : le niveau 1 nettoie le capteur pour la treizième fois, le niveau 2 désigne la gamme préventive. C'est la différence entre remise en service et fiabilisation.\n\nLes contenus des blocs sont inventés à titre d'exemple."
+    }
+  ],
+  "launch": { "view": "canvas", "page": "page-2" }
+}

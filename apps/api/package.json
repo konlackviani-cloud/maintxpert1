@@ -1,0 +1,32 @@
+{
+  "name": "@maintxpert/api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Couche 2 — logique métier MaintXpert (API REST). Autorité sur les règles à la synchronisation.",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
+    "start": "node --env-file-if-exists=.env dist/index.js",
+    "build": "tsup src/index.ts --format esm --target node20 --out-dir dist --clean",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@maintxpert/shared": "*",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "pg": "^8.13.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.7",
+    "@types/pg": "^8.11.10",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

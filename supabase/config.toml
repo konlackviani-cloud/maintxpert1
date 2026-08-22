@@ -1,0 +1,37 @@
+project_id = "maintxpert"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[studio]
+enabled = true
+port = 54323
+
+[storage]
+enabled = true
+file_size_limit = "1MiB"
+
+# MaintXpert n'utilise PAS Supabase Auth : les JWT sont émis par apps/api et adossés
+# au matricule (décision D2, docs/03-decisions.md). Le service reste activé car le
+# service storage-api de la stack locale en dépend au démarrage.
+# La table `auth.users` doit rester vide : la seule source d'identité est `public.utilisateur`.
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+enable_signup = false
+
+[analytics]
+enabled = false

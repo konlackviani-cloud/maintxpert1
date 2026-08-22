@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; }
+    * { box-sizing: border-box; }
+    a { color: #14539A; text-decoration: none; }
+    a:hover { color: #0E3C72; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; display: flex; flex-direction: column; background: #F1F4F7; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #0E1726; font-size: 15px;">
+
+  <div style="height: 60px; display: flex; align-items: center; gap: 28px; padding: 0 24px; background: #FFFFFF; border-bottom: 1.5px solid #D7DDE5;">
+    <div style="display: flex; align-items: center; gap: 11px;">
+      <div style="width: 34px; height: 34px; border-radius: 8px; background: #14539A; display: flex; align-items: center; justify-content: center;">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V6l7 7 7-7v13"></path></svg>
+      </div>
+      <div style="font-size: 18px; font-weight: 700; letter-spacing: -0.2px;">MaintXpert</div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <div style="height: 38px; display: flex; align-items: center; padding: 0 15px; border-radius: 8px; color: #3E4A59;">Tableau de bord</div>
+      <div style="height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 15px; border-radius: 8px; background: #E9F0F9; font-weight: 600; color: #14539A;">
+        Validation
+        <div style="min-width: 22px; height: 22px; border-radius: 11px; background: #A25A00; color: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 6px;">6</div>
+      </div>
+      <div style="height: 38px; display: flex; align-items: center; padding: 0 15px; border-radius: 8px; color: #3E4A59;">Nomenclature</div>
+      <div style="height: 38px; display: flex; align-items: center; padding: 0 15px; border-radius: 8px; color: #3E4A59;">AMDEC</div>
+      <div style="height: 38px; display: flex; align-items: center; padding: 0 15px; border-radius: 8px; color: #3E4A59;">Recherche</div>
+      <div style="height: 38px; display: flex; align-items: center; padding: 0 15px; border-radius: 8px; color: #3E4A59;">Défaillogrammes</div>
+    </div>
+
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+      <div style="text-align: right;">
+        <div style="font-size: 14px; font-weight: 600;">J. Ngo Bell</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A6675;">TC-0412 · Responsable</div>
+      </div>
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: #E9F0F9; border: 1.5px solid #B9CFE7; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #14539A; font-size: 14px;">JN</div>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; overflow: hidden;">
+
+    <div style="width: 396px; flex-shrink: 0; background: #FFFFFF; border-right: 1.5px solid #D7DDE5; display: flex; flex-direction: column; overflow: hidden;">
+
+      <div style="padding: 16px 18px 12px; border-bottom: 1.5px solid #D7DDE5;">
+        <div style="font-size: 17px; font-weight: 700;">File de validation</div>
+        <div style="font-size: 13px; color: #5A6675; margin-top: 2px;">6 contributions · plus anciennes en tête</div>
+      </div>
+
+      <div style="padding: 14px 18px; border-bottom: 1.5px solid #14539A; background: #E9F0F9;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="font-size: 15px; font-weight: 600; color: #14539A; flex-grow: 1;">Vibration anormale du groupe</div>
+          <div style="height: 22px; padding: 0 8px; border-radius: 4px; background: #A25A00; color: #FFFFFF; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center;">9 J</div>
+        </div>
+        <div style="font-size: 13px; color: #5A6675; margin-top: 4px;">Soutireuse-boucheuse · CH02</div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A6675;">TC-2841</div>
+          <div style="height: 20px; padding: 0 7px; border-radius: 4px; background: #FBF4E7; border: 1px solid #E0CBA3; color: #6B4400; font-size: 11px; font-weight: 600; display: flex; align-items: center;">saisie libre</div>
+        </div>
+      </div>
+
+      <div style="padding: 14px 18px; border-bottom: 1px solid #E4E9EF;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="font-size: 15px; font-weight: 600; flex-grow: 1;">Bourrage à l’entrée machine</div>
+          <div style="height: 22px; padding: 0 8px; border-radius: 4px; background: #A25A00; color: #FFFFFF; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center;">8 J</div>
+        </div>
+        <div style="font-size: 13px; color: #5A6675; margin-top: 4px;">Encaisseuse · CH02</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A6675; margin-top: 8px;">TC-1907</div>
+      </div>
+
+      <div style="padding: 14px 18px; border-bottom: 1px solid #E4E9EF;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="font-size: 15px; font-weight: 600; flex-grow: 1;">Fuite de produit sous la machine</div>
+          <div style="height: 22px; padding: 0 8px; border-radius: 4px; background: #ECEFF3; color: #5A6675; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center;">3 J</div>
+        </div>
+        <div style="font-size: 13px; color: #5A6675; margin-top: 4px;">Laveuse bouteilles · CH05</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A6675; margin-top: 8px;">TC-3115</div>
+      </div>
+
+      <div style="padding: 14px 18px; border-bottom: 1px solid #E4E9EF;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="font-size: 15px; font-weight: 600; flex-grow: 1;">Étiquettes décalées en sortie</div>
+          <div style="height: 22px; padding: 0 8px; border-radius: 4px; background: #ECEFF3; color: #5A6675; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center;">2 J</div>
+        </div>
+        <div style="font-size: 13px; color: #5A6675; margin-top: 4px;">Étiqueteuse · CH02</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A6675; margin-top: 8px;">TC-2841</div>
+      </div>
+
+      <div style="padding: 14px 18px; border-bottom: 1px solid #E4E9EF;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="font-size: 15px; font-weight: 600; flex-grow: 1;">Arrêt intempestif en production</div>
+          <div style="height: 22px; padding: 0 8px; border-radius: 4px; background: #ECEFF3; color: #5A6675; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center;">1 J</div>
+        </div>
+        <div style="font-size: 13px; color: #5A6675; margin-top: 4px;">Souffleuse préformes · CH09</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A6675; margin-top: 8px;">TC-0788</div>
+      </div>
+
+    </div>
+
+    <div style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column;">
+
+      <div style="flex-grow: 1; overflow: hidden; padding: 22px 26px; display: flex; gap: 20px;">
+
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 14px;">
+
+          <div>
+            <div style="font-size: 22px; font-weight: 700;">Contribution de TC-2841 — A. Mballa</div>
+            <div style="font-size: 14px; color: #5A6675; margin-top: 3px;">Soumise le 13 août 2026 à 23:07 · Soutireuse-boucheuse · CH02 · intervention de 34 min</div>
+          </div>
+
+          <div style="border: 1.5px solid #E0CBA3; border-radius: 10px; background: #FBF4E7; padding: 13px 15px; display: flex; gap: 11px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A25A00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;">
+              <path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17h.01"></path>
+            </svg>
+            <div style="font-size: 14px; color: #6B4400; line-height: 1.45; text-wrap: pretty;">
+              Trois niveaux sur quatre ont été saisis en texte libre. Rattachez-les à la nomenclature avant de valider, sinon ils resteront introuvables par la recherche des autres techniciens.
+            </div>
+          </div>
+
+          <div style="border: 1.5px solid #D7DDE5; border-radius: 10px; background: #FFFFFF; overflow: hidden;">
+
+            <div style="display: flex; align-items: center; gap: 16px; padding: 14px 16px; border-bottom: 1px solid #E4E9EF;">
+              <div style="width: 78px; flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #5A6675;">Symptôme</div>
+              <div style="flex-grow: 1; font-size: 16px; font-weight: 600;">Vibration anormale du groupe</div>
+              <div style="height: 24px; padding: 0 9px; border-radius: 4px; background: #FBF4E7; border: 1px solid #E0CBA3; color: #6B4400; font-size: 11px; font-weight: 600; display: flex; align-items: center;">saisie libre</div>
+              <div style="width: 260px; height: 40px; border: 1.5px solid #14539A; border-radius: 8px; display: flex; align-items: center; gap: 9px; padding: 0 12px; background: #FFFFFF;">
+                <span style="flex-grow: 1; font-size: 14px; color: #5A6675;">Rattacher à un terme…</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14539A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 16px; padding: 14px 16px; border-bottom: 1px solid #E4E9EF;">
+              <div style="width: 78px; flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #14539A;">Défaut</div>
+              <div style="flex-grow: 1; font-size: 16px; font-weight: 600;">Palier d’arbre principal desserré</div>
+              <div style="height: 24px; padding: 0 9px; border-radius: 4px; background: #FBF4E7; border: 1px solid #E0CBA3; color: #6B4400; font-size: 11px; font-weight: 600; display: flex; align-items: center;">saisie libre</div>
+              <div style="width: 260px; height: 40px; border: 1.5px solid #14539A; border-radius: 8px; display: flex; align-items: center; gap: 9px; padding: 0 12px; background: #FFFFFF;">
+                <span style="flex-grow: 1; font-size: 14px; color: #5A6675;">Rattacher à un terme…</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14539A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 16px; padding: 14px 16px; border-bottom: 1px solid #E4E9EF;">
+              <div style="width: 78px; flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #5A6675;">Cause</div>
+              <div style="flex-grow: 1; font-size: 16px; font-weight: 600;">Serrage insuffisant au dernier montage</div>
+              <div style="height: 24px; padding: 0 9px; border-radius: 4px; background: #E7F2EA; border: 1px solid #A9CDB6; color: #14713A; font-size: 11px; font-weight: 600; display: flex; align-items: center;">nomenclature</div>
+              <div style="width: 260px; height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 12px;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#14713A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"></path></svg>
+                <span style="font-size: 14px; color: #14713A; font-weight: 600;">Terme existant</span>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 16px; padding: 14px 16px;">
+              <div style="width: 78px; flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #5A6675;">Remède</div>
+              <div style="flex-grow: 1; font-size: 16px; font-weight: 600;">Reprise du serrage au couple, 180 N·m</div>
+              <div style="height: 24px; padding: 0 9px; border-radius: 4px; background: #FBF4E7; border: 1px solid #E0CBA3; color: #6B4400; font-size: 11px; font-weight: 600; display: flex; align-items: center;">saisie libre</div>
+              <div style="width: 260px; height: 40px; border: 1.5px solid #14539A; border-radius: 8px; display: flex; align-items: center; gap: 9px; padding: 0 12px; background: #FFFFFF;">
+                <span style="flex-grow: 1; font-size: 14px; color: #5A6675;">Rattacher à un terme…</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14539A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+            </div>
+
+          </div>
+
+          <div style="border: 1.5px solid #D7DDE5; border-radius: 10px; background: #FFFFFF; padding: 14px 16px;">
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #5A6675;">Fiches proches déjà validées</div>
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 11px;">
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 600; color: #5A6675;">3×</div>
+              <div style="flex-grow: 1; font-size: 15px;">Bruit anormal en rotation → Palier desserré → Serrage insuffisant</div>
+              <div style="font-size: 13px; font-weight: 600; color: #14539A;">Fusionner</div>
+            </div>
+            <div style="font-size: 13px; color: #5A6675; margin-top: 8px; text-wrap: pretty;">
+              Le symptôme diffère mais le triplet défaut / cause / remède est identique. Fusionner incrémente la fréquence existante au lieu de créer un doublon.
+            </div>
+          </div>
+
+        </div>
+
+        <div style="width: 236px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #5A6675; margin-bottom: 8px;">Photo jointe</div>
+            <div style="width: 236px; height: 176px; border: 1.5px solid #D7DDE5; border-radius: 10px; background: #E3E8EE; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+              <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#8A97A6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 8h3l1.5-2h7L17 8h3v11H4z"></path><circle cx="12" cy="13" r="3.4"></circle>
+              </svg>
+              <div style="font-size: 13px; color: #5A6675;">Photo du défaut</div>
+            </div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5A6675; margin-top: 7px;">312 Ko · WebP · 1600 px</div>
+          </div>
+
+          <div style="border: 1.5px solid #D7DDE5; border-radius: 10px; background: #FFFFFF; padding: 13px 14px;">
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #5A6675;">Jalons relevés</div>
+            <div style="display: flex; justify-content: space-between; margin-top: 9px; font-size: 14px;">
+              <span style="color: #5A6675;">TTDi</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 600;">19 min</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 14px;">
+              <span style="color: #5A6675;">Durée totale</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 600;">34 min</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="height: 78px; flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 0 26px; background: #FFFFFF; border-top: 1.5px solid #D7DDE5;">
+        <div style="height: 48px; padding: 0 22px; border-radius: 8px; background: #14713A; display: flex; align-items: center; gap: 10px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"></path></svg>
+          <span style="font-size: 16px; font-weight: 600; color: #FFFFFF;">Valider et publier</span>
+        </div>
+        <div style="height: 48px; padding: 0 20px; border: 1.5px solid #D7DDE5; border-radius: 8px; background: #FFFFFF; display: flex; align-items: center; font-size: 16px; font-weight: 600; color: #3E4A59;">Renvoyer en correction</div>
+        <div style="height: 48px; padding: 0 20px; border: 1.5px solid #E3B4B2; border-radius: 8px; background: #FFFFFF; display: flex; align-items: center; font-size: 16px; font-weight: 600; color: #B3221C;">Rejeter</div>
+        <div style="margin-left: auto; font-size: 13px; color: #5A6675;">Une fois validée, la fiche est visible par tous les techniciens immédiatement.</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

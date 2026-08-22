@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; }
+    * { box-sizing: border-box; }
+    a { color: #14539A; text-decoration: none; }
+    a:hover { color: #0E3C72; }
+  </style>
+</helmet>
+
+<div style="width: 375px; height: 812px; display: flex; flex-direction: column; background: #F7F8FA; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #0E1726; font-size: 17px;">
+
+  <div style="display: flex; align-items: center; gap: 8px; padding: 7px 16px; background: #ECEFF3; border-bottom: 1px solid #D7DDE5;">
+    <div style="width: 9px; height: 9px; border-radius: 50%; background: #A25A00;"></div>
+    <div style="font-size: 13px; font-weight: 600;">Hors ligne</div>
+    <div style="margin-left: auto; font-size: 13px; color: #5A6675;">Base locale · 342 fiches</div>
+  </div>
+
+  <div style="padding: 0 8px 12px 4px; background: #FFFFFF; border-bottom: 1.5px solid #D7DDE5;">
+    <div style="height: 60px; display: flex; align-items: center; gap: 6px;">
+      <div style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E1726" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 5l-7 7 7 7"></path>
+        </svg>
+      </div>
+      <div style="flex-grow: 1;">
+        <div style="font-size: 19px; font-weight: 700; line-height: 1.25; text-wrap: pretty;">Vibration anormale du groupe</div>
+      </div>
+    </div>
+    <div style="padding-left: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5A6675;">CH02 · Soutireuse-boucheuse</div>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 28px; gap: 20px;">
+
+    <div style="width: 96px; height: 96px; border-radius: 50%; background: #ECEFF3; border: 1.5px solid #D7DDE5; display: flex; align-items: center; justify-content: center;">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8A97A6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4.2-4.2"></path><path d="M8.6 11h4.8"></path>
+      </svg>
+    </div>
+
+    <div style="text-align: center; display: flex; flex-direction: column; gap: 9px;">
+      <div style="font-size: 21px; font-weight: 700; text-wrap: pretty;">Aucune fiche pour ce symptôme</div>
+      <div style="font-size: 16px; color: #5A6675; line-height: 1.5; text-wrap: pretty;">
+        C’est la première fois que ce symptôme est signalé sur cet équipement. Votre diagnostic servira aux prochains.
+      </div>
+    </div>
+
+  </div>
+
+  <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px;">
+
+    <div style="height: 72px; border-radius: 10px; background: #14539A; display: flex; align-items: center; justify-content: center; gap: 11px;">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12h14"></path>
+      </svg>
+      <div style="font-size: 19px; font-weight: 600; color: #FFFFFF;">Documenter ce cas</div>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <div style="flex-grow: 1; height: 58px; border: 1.5px solid #D7DDE5; border-radius: 10px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#14539A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l8 4v6c0 4.4-3.4 7.3-8 8-4.6-.7-8-3.6-8-8V7z"></path><path d="M9.2 12.2l2 2 3.6-3.8"></path>
+        </svg>
+        <div style="font-size: 15px; font-weight: 600; color: #14539A;">Fiche CSD</div>
+      </div>
+      <div style="flex-grow: 1; height: 58px; border: 1.5px solid #D7DDE5; border-radius: 10px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#14539A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10a8 8 0 0113.7-5.4L20 7"></path><path d="M20 3v4h-4"></path>
+        </svg>
+        <div style="font-size: 15px; font-weight: 600; color: #14539A;">Autre symptôme</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

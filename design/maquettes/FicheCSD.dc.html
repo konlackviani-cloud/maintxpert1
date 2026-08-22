@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; }
+    * { box-sizing: border-box; }
+    a { color: #14539A; text-decoration: none; }
+    a:hover { color: #0E3C72; }
+  </style>
+</helmet>
+
+<div style="width: 375px; height: 812px; display: flex; flex-direction: column; background: #F7F8FA; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #0E1726; font-size: 17px;">
+
+  <div style="display: flex; align-items: center; gap: 8px; padding: 7px 16px; background: #ECEFF3; border-bottom: 1px solid #D7DDE5;">
+    <div style="width: 9px; height: 9px; border-radius: 50%; background: #A25A00;"></div>
+    <div style="font-size: 13px; font-weight: 600;">Hors ligne</div>
+    <div style="margin-left: auto; font-size: 13px; color: #5A6675;">Fiche en cache</div>
+  </div>
+
+  <div style="height: 60px; display: flex; align-items: center; gap: 6px; padding: 0 8px 0 4px; background: #FFFFFF; border-bottom: 1.5px solid #D7DDE5;">
+    <div style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E1726" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 5l-7 7 7 7"></path>
+      </svg>
+    </div>
+    <div style="flex-grow: 1;">
+      <div style="font-size: 19px; font-weight: 700;">Configuration Sans Défaut</div>
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5A6675;">CH02 · Soutireuse-boucheuse</div>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1; overflow: hidden;">
+
+    <div style="height: 208px; background: #E3E8EE; border-bottom: 1.5px solid #D7DDE5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#8A97A6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 8h3l1.5-2h7L17 8h3v11H4z"></path><circle cx="12" cy="13" r="3.4"></circle>
+      </svg>
+      <div style="font-size: 14px; color: #5A6675;">Photo de référence — machine à l’état nominal</div>
+    </div>
+
+    <div style="padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#14713A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l8 4v6c0 4.4-3.4 7.3-8 8-4.6-.7-8-3.6-8-8V7z"></path><path d="M9.2 12.2l2 2 3.6-3.8"></path>
+        </svg>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #14713A;">État de référence attendu</div>
+      </div>
+
+      <div style="border: 1.5px solid #D7DDE5; border-radius: 10px; background: #FFFFFF; overflow: hidden;">
+
+        <div style="display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-bottom: 1px solid #E4E9EF;">
+          <div style="flex-grow: 1; font-size: 16px;">Pression de soutirage</div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 600; color: #14539A;">2,4 bar</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-bottom: 1px solid #E4E9EF;">
+          <div style="flex-grow: 1; font-size: 16px;">Seuil capteur de niveau</div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 600; color: #14539A;">65 %</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-bottom: 1px solid #E4E9EF;">
+          <div style="flex-grow: 1; font-size: 16px;">Température produit</div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 600; color: #14539A;">2 à 4 °C</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; padding: 13px 14px;">
+          <div style="flex-grow: 1; font-size: 16px;">Cadence nominale</div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 600; color: #14539A;">24 000 b/h</div>
+        </div>
+
+      </div>
+
+      <div style="font-size: 15px; color: #3E4A59; line-height: 1.55; text-wrap: pretty;">
+        Étoiles d’entrée et de sortie alignées sans jeu latéral. Aucune trace de produit sous le carter de came. Graissage centralisé au niveau haut du réservoir.
+      </div>
+
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5A6675;">Mise à jour le 02/08/2026 · resp. maintenance</div>
+
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

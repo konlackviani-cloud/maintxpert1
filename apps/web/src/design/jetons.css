@@ -1,0 +1,152 @@
+/*
+ * MaintXpert — jetons de design.
+ *
+ * Direction visuelle PROVISOIRE, à valider avant la génération des écrans (phase 3).
+ * Contraintes : lisibilité sous éclairage d'usine et en extérieur, usage avec gants,
+ * quarts de nuit. Contrastes visés AA minimum, AAA sur le texte courant.
+ */
+
+:root {
+  /* --- Couleurs de marque ------------------------------------------------ */
+  --c-primaire: #14539a; /* bleu industriel sobre */
+  --c-primaire-fonce: #0e3c72;
+  --c-primaire-clair: #e8f0fa;
+
+  /* --- Couleurs d'état (sémantique métier) -------------------------------- */
+  --c-succes: #15803d; /* validée, synchronisé */
+  --c-succes-clair: #e7f5ec;
+  --c-alerte: #b45309; /* en attente, récurrence signalée */
+  --c-alerte-clair: #fdf3e3;
+  --c-danger: #b91c1c; /* rejetée, IPR critique, hors ligne bloquant */
+  --c-danger-clair: #fdeaea;
+  --c-neutre-info: #475569; /* archivée */
+
+  /* --- Neutres ------------------------------------------------------------ */
+  --c-fond: #ffffff;
+  --c-fond-secondaire: #f4f6f8;
+  --c-bordure: #cbd5e1;
+  --c-bordure-forte: #94a3b8;
+  --c-texte: #0f172a; /* contraste 16.9:1 sur blanc */
+  --c-texte-secondaire: #475569; /* contraste 8.5:1 sur blanc */
+  --c-texte-inverse: #ffffff;
+
+  /* --- Typographie -------------------------------------------------------- */
+  --police: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --police-mono: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+
+  --taille-xs: 0.8125rem; /* 13px — mentions légales uniquement */
+  --taille-sm: 0.9375rem; /* 15px */
+  --taille-base: 1.0625rem; /* 17px — texte courant, plancher terrain */
+  --taille-lg: 1.25rem; /* 20px */
+  --taille-xl: 1.5rem; /* 24px */
+  --taille-2xl: 2rem; /* 32px */
+
+  --graisse-normale: 400;
+  --graisse-moyenne: 550;
+  --graisse-forte: 700;
+
+  /* --- Espacement (pas de 4px) -------------------------------------------- */
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-6: 1.5rem;
+  --e-8: 2rem;
+  --e-12: 3rem;
+
+  /* --- Formes ------------------------------------------------------------- */
+  --rayon: 8px;
+  --rayon-lg: 12px;
+  --ombre: 0 1px 3px rgb(15 23 42 / 12%);
+  --ombre-lg: 0 4px 16px rgb(15 23 42 / 16%);
+
+  /* --- Ergonomie terrain --------------------------------------------------- */
+  --cible-tactile: 56px; /* plancher absolu — usage avec gants */
+  --cible-tactile-lg: 72px; /* actions principales du parcours diagnostic */
+  --largeur-contenu: 42rem;
+}
+
+/*
+ * Mode sombre — quarts de nuit. Réduit l'éblouissement sans perdre le contraste.
+ * Suivra la préférence système tant qu'un réglage explicite n'est pas implémenté.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-primaire: #5b9bd5;
+    --c-primaire-fonce: #3d7fbc;
+    --c-primaire-clair: #16283d;
+
+    --c-succes: #4ade80;
+    --c-succes-clair: #14291d;
+    --c-alerte: #fbbf24;
+    --c-alerte-clair: #2e2410;
+    --c-danger: #f87171;
+    --c-danger-clair: #2e1616;
+    --c-neutre-info: #94a3b8;
+
+    --c-fond: #0f172a;
+    --c-fond-secondaire: #1e293b;
+    --c-bordure: #334155;
+    --c-bordure-forte: #64748b;
+    --c-texte: #f1f5f9;
+    --c-texte-secondaire: #cbd5e1;
+    --c-texte-inverse: #0f172a;
+
+    --ombre: 0 1px 3px rgb(0 0 0 / 40%);
+    --ombre-lg: 0 4px 16px rgb(0 0 0 / 50%);
+  }
+}
+
+/* --- Réinitialisation minimale ------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--police);
+  font-size: var(--taille-base);
+  line-height: 1.55;
+  color: var(--c-texte);
+  background: var(--c-fond);
+  /* Évite le zoom accidentel sur double-tap avec des gants. */
+  touch-action: manipulation;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Toute cible interactive respecte le plancher tactile. */
+button,
+[role='button'],
+a.bouton {
+  min-height: var(--cible-tactile);
+  min-width: var(--cible-tactile);
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid var(--c-primaire);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

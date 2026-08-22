@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; }
+    * { box-sizing: border-box; }
+    a { color: #5B9BD5; text-decoration: none; }
+    a:hover { color: #8FBDE8; }
+  </style>
+</helmet>
+
+<div style="width: 375px; height: 812px; display: flex; flex-direction: column; background: #0C1521; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #EAF0F7; font-size: 17px;">
+
+  <div style="display: flex; align-items: center; gap: 8px; padding: 7px 16px; background: #16212F; border-bottom: 1px solid #2C3B4E;">
+    <div style="width: 9px; height: 9px; border-radius: 50%; background: #E0A230;"></div>
+    <div style="font-size: 13px; font-weight: 600;">Hors ligne</div>
+    <div style="margin-left: auto; font-size: 13px; color: #9CAFC4;">Résultats depuis la base locale</div>
+  </div>
+
+  <div style="padding: 0 8px 12px 4px; background: #16212F; border-bottom: 1.5px solid #2C3B4E;">
+    <div style="height: 60px; display: flex; align-items: center; gap: 6px;">
+      <div style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EAF0F7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 5l-7 7 7 7"></path>
+        </svg>
+      </div>
+      <div style="flex-grow: 1;">
+        <div style="font-size: 19px; font-weight: 700; line-height: 1.25; text-wrap: pretty;">Arrêt intempestif en production</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; padding-left: 16px;">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #9CAFC4;">CH02 · Soutireuse-boucheuse</div>
+      <div style="margin-left: auto; font-size: 13px; font-weight: 600; color: #4FBE7B;">4 fiches validées</div>
+    </div>
+  </div>
+
+  <div style="padding: 10px 16px 6px; display: flex; align-items: center; gap: 7px;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CAFC4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 6h16M7 12h10M10 18h4"></path>
+    </svg>
+    <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #9CAFC4;">Triées par fréquence observée</div>
+  </div>
+
+  <div style="flex-grow: 1; overflow: hidden; padding: 6px 16px 0; display: flex; flex-direction: column; gap: 12px;">
+
+    <div style="border: 1.5px solid #3E7CB8; border-radius: 10px; background: #16212F; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: #1D3B5C;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 19px; font-weight: 600; color: #9EC8F0;">12×</div>
+        <div style="font-size: 13px; color: #A8C0D8;">déjà observé</div>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 5px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A8C0D8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 8h3l1.5-2h7L17 8h3v11H4z"></path><circle cx="12" cy="13" r="3.2"></circle>
+          </svg>
+          <div style="font-size: 13px; color: #A8C0D8;">photo</div>
+        </div>
+      </div>
+      <div style="padding: 13px 14px 14px; display: flex; flex-direction: column; gap: 11px;">
+        <div>
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #6BA6E8;">Défaut à vérifier</div>
+          <div style="font-size: 19px; font-weight: 600; line-height: 1.3; margin-top: 2px; text-wrap: pretty;">Capteur de niveau cuve encrassé</div>
+        </div>
+        <div style="height: 1px; background: #2C3B4E;"></div>
+        <div style="display: flex; flex-direction: column; gap: 7px;">
+          <div style="display: flex; gap: 10px;">
+            <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #9CAFC4; width: 62px; padding-top: 2px;">Cause</div>
+            <div style="flex-grow: 1; font-size: 16px;">Absence de nettoyage hebdomadaire</div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #9CAFC4; width: 62px; padding-top: 2px;">Remède</div>
+            <div style="flex-grow: 1; font-size: 16px; color: #C2D2E2;">Démonter, nettoyer à l’eau claire, régler le seuil à 65 %</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border: 1.5px solid #2C3B4E; border-radius: 10px; background: #16212F; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: #1D2A3A; border-bottom: 1px solid #2C3B4E;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 19px; font-weight: 600; color: #EAF0F7;">7×</div>
+        <div style="font-size: 13px; color: #9CAFC4;">déjà observé</div>
+      </div>
+      <div style="padding: 13px 14px 14px; display: flex; flex-direction: column; gap: 11px;">
+        <div>
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #9CAFC4;">Défaut à vérifier</div>
+          <div style="font-size: 19px; font-weight: 600; line-height: 1.3; margin-top: 2px; text-wrap: pretty;">Vérin de came d’élévation grippé</div>
+        </div>
+        <div style="height: 1px; background: #2C3B4E;"></div>
+        <div style="display: flex; gap: 10px;">
+          <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #9CAFC4; width: 62px; padding-top: 2px;">Cause</div>
+          <div style="flex-grow: 1; font-size: 16px;">Graissage non effectué depuis 3 semaines</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border: 1.5px solid #2C3B4E; border-radius: 10px; background: #16212F; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: #1D2A3A; border-bottom: 1px solid #2C3B4E;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 19px; font-weight: 600; color: #EAF0F7;">3×</div>
+        <div style="font-size: 13px; color: #9CAFC4;">déjà observé</div>
+      </div>
+      <div style="padding: 13px 14px 14px;">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #9CAFC4;">Défaut à vérifier</div>
+        <div style="font-size: 19px; font-weight: 600; line-height: 1.3; margin-top: 2px; text-wrap: pretty;">Contacteur K3 armoire de puissance</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="padding: 12px 16px 16px; background: #16212F; border-top: 1.5px solid #2C3B4E;">
+    <div style="height: 60px; border: 1.5px solid #3E7CB8; border-radius: 10px; background: #16212F; display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6BA6E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12h14"></path>
+      </svg>
+      <div style="font-size: 17px; font-weight: 600; color: #6BA6E8;">Aucune ne correspond</div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

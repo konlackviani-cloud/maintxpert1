@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; }
+    * { box-sizing: border-box; }
+    a { color: #14539A; text-decoration: none; }
+    a:hover { color: #0E3C72; }
+  </style>
+</helmet>
+
+<div style="width: 375px; height: 812px; display: flex; flex-direction: column; background: #F7F8FA; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #0E1726; font-size: 17px;">
+
+  <div style="display: flex; align-items: center; gap: 8px; padding: 7px 16px; background: #ECEFF3; border-bottom: 1px solid #D7DDE5;">
+    <div style="width: 9px; height: 9px; border-radius: 50%; background: #A25A00;"></div>
+    <div style="font-size: 13px; font-weight: 600;">Hors ligne</div>
+    <div style="margin-left: auto; font-size: 13px; color: #5A6675;">Sera envoyé à la reconnexion</div>
+  </div>
+
+  <div style="height: 60px; display: flex; align-items: center; gap: 6px; padding: 0 8px 0 4px; background: #FFFFFF; border-bottom: 1.5px solid #D7DDE5;">
+    <div style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E1726" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 5l-7 7 7 7"></path>
+      </svg>
+    </div>
+    <div style="flex-grow: 1;">
+      <div style="font-size: 19px; font-weight: 700;">Fiche SDCR</div>
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5A6675;">CH02 · Soutireuse-boucheuse</div>
+    </div>
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 600; color: #14539A; padding-right: 10px;">12×</div>
+  </div>
+
+  <div style="flex-grow: 1; overflow: hidden; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px;">
+
+    <div style="border: 1.5px solid #D7DDE5; border-radius: 10px; background: #FFFFFF; padding: 13px 14px; display: flex; flex-direction: column; gap: 12px;">
+      <div>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #14539A;">Défaut</div>
+        <div style="font-size: 19px; font-weight: 600; line-height: 1.3; margin-top: 2px; text-wrap: pretty;">Capteur de niveau cuve encrassé</div>
+      </div>
+      <div style="height: 1px; background: #E4E9EF;"></div>
+      <div>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #5A6675;">Cause</div>
+        <div style="font-size: 17px; margin-top: 2px; text-wrap: pretty;">Absence de nettoyage hebdomadaire</div>
+      </div>
+      <div style="height: 1px; background: #E4E9EF;"></div>
+      <div>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #5A6675;">Remède</div>
+        <div style="font-size: 17px; margin-top: 2px; color: #3E4A59; text-wrap: pretty;">Démonter le capteur, nettoyer à l’eau claire, régler le seuil à 65 %, contrôler la reprise.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px; border: 1.5px solid #D7DDE5; border-radius: 10px; background: #FFFFFF; padding: 10px 12px;">
+      <div style="width: 60px; height: 60px; border-radius: 8px; background: #ECEFF3; border: 1px solid #D7DDE5; display: flex; align-items: center; justify-content: center;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8A97A6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 8h3l1.5-2h7L17 8h3v11H4z"></path><circle cx="12" cy="13" r="3.2"></circle>
+        </svg>
+      </div>
+      <div style="flex-grow: 1;">
+        <div style="font-size: 15px; font-weight: 600;">Photo du défaut</div>
+        <div style="font-size: 13px; color: #5A6675;">Ajoutée par TC-1907 · 14 mars</div>
+      </div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A97A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>
+    </div>
+
+    <div style="border: 1.5px solid #D7DDE5; border-radius: 10px; background: #FFFFFF; padding: 14px; display: flex; flex-direction: column; gap: 12px;">
+
+      <div style="display: flex; align-items: center;">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #5A6675;">Mon intervention</div>
+        <div style="margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: {{ ttdiCouleur }};">{{ ttdiTexte }}</div>
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <div style="display: flex; flex-direction: column; align-items: center; padding-top: 3px;">
+          <div style="width: 15px; height: 15px; border-radius: 50%; background: #14539A;"></div>
+          <div style="width: 2.5px; flex-grow: 1; background: {{ trait1 }}; min-height: 26px;"></div>
+          <div style="width: 15px; height: 15px; border-radius: 50%; background: {{ point15 }}; border: 2.5px solid {{ bord15 }};"></div>
+          <div style="width: 2.5px; flex-grow: 1; background: {{ trait2 }}; min-height: 26px;"></div>
+          <div style="width: 15px; height: 15px; border-radius: 50%; background: {{ point2 }}; border: 2.5px solid {{ bord2 }};"></div>
+        </div>
+
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 26px;">
+          <div style="display: flex; align-items: baseline; gap: 8px;">
+            <div style="flex-grow: 1;">
+              <div style="font-size: 15px; font-weight: 600;">Intervention ouverte</div>
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5A6675;">T1</div>
+            </div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600;">22:14</div>
+          </div>
+
+          <div style="display: flex; align-items: baseline; gap: 8px;">
+            <div style="flex-grow: 1;">
+              <div style="font-size: 15px; font-weight: 600; color: {{ texte15 }};">Cause confirmée</div>
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5A6675;">T1.5</div>
+            </div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: {{ texte15 }};">{{ heure15 }}</div>
+          </div>
+
+          <div style="display: flex; align-items: baseline; gap: 8px;">
+            <div style="flex-grow: 1;">
+              <div style="font-size: 15px; font-weight: 600; color: {{ texte2 }};">Intervention clôturée</div>
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5A6675;">T2</div>
+            </div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: {{ texte2 }};">{{ heure2 }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div style="padding: 12px 16px 16px; background: #FFFFFF; border-top: 1.5px solid #D7DDE5;">
+    <div style="height: 72px; border-radius: 10px; background: {{ ctaFond }}; border: 1.5px solid {{ ctaBord }}; display: flex; align-items: center; justify-content: center; gap: 11px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ ctaTexte }}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4.5 12.5l5 5 10-11"></path>
+      </svg>
+      <div style="font-size: 19px; font-weight: 600; color: {{ ctaTexte }};">{{ ctaLibelle }}</div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"etape":{"editor":"enum","options":["1 · ouverte","2 · cause confirmée","3 · clôturée"],"default":"1 · ouverte","section":"Jalons"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const etape = this.props.etape ?? '1 · ouverte';
+    const fait15 = etape.startsWith('2') || etape.startsWith('3');
+    const fait2 = etape.startsWith('3');
+
+    const BLEU = '#14539A';
+    const VERT = '#14713A';
+    const GRIS = '#C3CBD5';
+    const TEXTE = '#0E1726';
+    const ETEINT = '#8A97A6';
+
+    let cta;
+    if (!fait15) {
+      cta = { libelle: 'Confirmer cette cause', fond: BLEU, bord: BLEU, texte: '#FFFFFF' };
+    } else if (!fait2) {
+      cta = { libelle: 'Clôturer l’intervention', fond: VERT, bord: VERT, texte: '#FFFFFF' };
+    } else {
+      cta = { libelle: 'Intervention clôturée', fond: '#EFF2F5', bord: '#D7DDE5', texte: ETEINT };
+    }
+
+    return {
+      trait1: fait15 ? BLEU : GRIS,
+      trait2: fait2 ? VERT : GRIS,
+      point15: fait15 ? BLEU : '#FFFFFF',
+      bord15: fait15 ? BLEU : GRIS,
+      point2: fait2 ? VERT : '#FFFFFF',
+      bord2: fait2 ? VERT : GRIS,
+      texte15: fait15 ? TEXTE : ETEINT,
+      texte2: fait2 ? TEXTE : ETEINT,
+      heure15: fait15 ? '22:20' : 'en attente',
+      heure2: fait2 ? '22:41' : 'en attente',
+      ttdiTexte: fait15 ? 'TTDi 6 min' : 'diagnostic en cours',
+      ttdiCouleur: fait15 ? VERT : '#A25A00',
+      ctaLibelle: cta.libelle,
+      ctaFond: cta.fond,
+      ctaBord: cta.bord,
+      ctaTexte: cta.texte,
+    };
+  }
+}
+</script>
+</body>
+</html>
