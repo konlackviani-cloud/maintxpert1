@@ -10,8 +10,10 @@ import helmet from 'helmet';
 import { env } from './config/env.js';
 import { verifierConnexion } from './db/client.js';
 import { gestionnaireErreurs, routeIntrouvable } from './middlewares/erreurs.js';
+import { routesAmdec } from './modules/amdec/routes.js';
 import { routesAuth } from './modules/auth/routes.js';
 import { routesCSD } from './modules/csd/routes.js';
+import { routesImport } from './modules/import/routes.js';
 import { routesNomenclature } from './modules/nomenclature/routes.js';
 import { routesPhotos } from './modules/photos/routes.js';
 import { routesSync } from './modules/sync/routes.js';
@@ -46,9 +48,11 @@ export function creerApp(): Express {
   app.use('/api/v1/nomenclature', routesNomenclature);
   app.use('/api/v1/csd', routesCSD);
   app.use('/api/v1/photos', routesPhotos);
+  app.use('/api/v1/amdec', routesAmdec);
+  app.use('/api/v1/import', routesImport);
 
   // Les modules métier se branchent ici au fil des phases :
-  //   phase 6 — /api/v1/amdec, /api/v1/import
+  //   phase 7 — /api/v1/tableau-de-bord, /api/v1/recherche
   //   ...
   //
   // La consultation ne passe PAS par l'API : elle lit le cache IndexedDB,
@@ -59,4 +63,5 @@ export function creerApp(): Express {
 
   return app;
 }
+
 

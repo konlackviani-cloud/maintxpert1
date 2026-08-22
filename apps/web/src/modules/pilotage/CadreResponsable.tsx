@@ -13,6 +13,8 @@ const ONGLETS: { chemin: string; libelle: string }[] = [
   { chemin: '/pilotage/validation', libelle: 'Validation' },
   { chemin: '/pilotage/nomenclature', libelle: 'Nomenclature' },
   { chemin: '/pilotage/csd', libelle: 'Fiches CSD' },
+  { chemin: '/pilotage/amdec', libelle: 'AMDEC' },
+  { chemin: '/pilotage/import', libelle: 'Import' },
 ];
 
 function initiales(prenom = '', nom = ''): string {
@@ -151,4 +153,5 @@ export function CadreResponsable({
     </div>
   );
 }
+
 

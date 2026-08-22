@@ -19,7 +19,9 @@ import type {
   ContributionAValider,
   CorrectionsFiche,
   DetailContribution,
+  EquipementImporte,
   FicheCSD,
+  ModeAMDEC,
   TermeGere,
   TermeNomenclature,
   TypeTerme,
@@ -122,4 +124,56 @@ export const envoyerPhotoCSD = (
     corpsBinaire: { donnees, typeMime },
     delaiMs: 60_000,
   });
+
+/* -------------------------------------------------------------------------- */
+/* B4 — AMDEC                                                                  */
+/* -------------------------------------------------------------------------- */
+
+export interface ModeAmdecDetaille extends ModeAMDEC {
+  id_equipement: number;
+  eq_nom: string;
+  eq_chaine: string;
+}
+
+export interface ReponseAmdec {
+  modes: ModeAmdecDetaille[];
+  nb_total: number;
+  nb_critiques: number;
+  ipr_maximal: number;
+}
+
+export const chargerModesAmdec = (idEquipement: number): Promise<ReponseAmdec> =>
+  appelerApi(`/amdec?id_equipement=${idEquipement}`);
+
+export interface SaisieModeAmdec {
+  id_equipement: number;
+  composant: string;
+  mode_defaillance: string;
+  cause: string;
+  effet: string;
+  gravite: number;
+  frequence: number;
+  detection: number;
+}
+
+export const creerModeAmdec = (saisie: SaisieModeAmdec): Promise<ModeAMDEC> =>
+  appelerApi('/amdec', { methode: 'POST', corps: saisie });
+
+export const recoterModeAmdec = (
+  idMode: number,
+  cotations: { gravite: number; frequence: number; detection: number },
+): Promise<ModeAMDEC> => appelerApi(`/amdec/${idMode}`, { methode: 'PATCH', corps: cotations });
+
+export const supprimerModeAmdec = (idMode: number): Promise<void> =>
+  appelerApi(`/amdec/${idMode}`, { methode: 'DELETE' });
+
+/* -------------------------------------------------------------------------- */
+/* B7 — import DimoMaint                                                       */
+/* -------------------------------------------------------------------------- */
+
+export const importerEquipements = (
+  equipements: EquipementImporte[],
+): Promise<{ crees: number; existants: number; total: number }> =>
+  appelerApi('/import/equipements', { methode: 'POST', corps: { equipements }, delaiMs: 120_000 });
+
 

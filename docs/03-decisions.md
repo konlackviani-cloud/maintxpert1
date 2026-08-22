@@ -329,12 +329,67 @@ s'y rattacher.
 
 ---
 
+## D22 — `mode_amdec.id_equipement` (résout O2)
+**Statut :** décidé le 2026-08-22 (phase 6)
+
+Migration 0011. Le dictionnaire ne donne à `mode_amdec` qu'un `composant` en texte libre : impossible
+de filtrer l'analyse par chaîne ou par équipement, alors que UC4 le demande et qu'une AMDEC n'a de
+sens que rapportée à une machine.
+
+`composant` est conservé : il désigne la **pièce** (« capteur de niveau »), pas la machine.
+Unicité ajoutée sur (équipement, composant, mode de défaillance) — un même mode ne se décrit qu'une
+fois.
+
+---
+
+## D23 — Suppression admise pour les modes AMDEC
+**Statut :** décidé le 2026-08-22 (phase 6)
+
+Seconde exception à l'interdiction de supprimer, après les photos remplacées (D20).
+
+L'interdiction protège le **retour d'expérience** : fiches SDCR et termes de nomenclature, auxquels
+des interventions sont rattachées. Un mode AMDEC est une **hypothèse d'analyse**, sans historique en
+dépendance. La retirer quand elle se révèle fausse vaut mieux que de la laisser fausser le
+classement de criticité.
+
+---
+
+## D24 — Import CSV : analyse côté navigateur, aperçu avant écriture
+**Statut :** décidé le 2026-08-22 (phase 6)
+
+Le fichier est lu, découpé et rattaché **dans le navigateur** ; l'API ne reçoit que des lignes déjà
+structurées. Le responsable voit donc l'aperçu et corrige le rattachement des colonnes **avant** que
+quoi que ce soit n'atteigne la base — un rattachement erroné créerait des centaines d'équipements
+faux.
+
+Analyseur écrit à la main plutôt qu'emprunté : l'export attendu vient d'Excel francophone
+(point-virgule, BOM UTF-8, guillemets doublés), et le format réel de DimoMaint n'ayant pas été
+fourni (**O7**), séparateur et colonnes sont **détectés, jamais présumés**.
+
+Insertion idempotente (`on conflict (chaine, nom) do nothing`) : un import initial se relance
+souvent après correction, rejouer le fichier ne doit pas dupliquer.
+
+Vérifié sur un export réaliste : BOM retiré, `;` détecté malgré une virgule dans un libellé cité,
+`Libellé équipement`/`Type`/`Ligne` rattachés correctement, guillemets doublés restitués, doublons
+internes fusionnés, `ch02` normalisé, lignes fautives rejetées avec leur numéro. 24 tests unitaires.
+
+---
+
+## Lacunes de couverture connues
+
+| Quoi | Pourquoi | Où |
+|---|---|---|
+| `supprimerMode` (AMDEC) | pg-mem refuse tout `DELETE` sur une table portant une colonne `generated always as … stored` ; PostgreSQL l'accepte. Reproduire le cas exigerait de retirer du schéma de test précisément ce que les autres tests vérifient. | `amdec.integration.test.ts` |
+| Aller-retour photo complet | Envoi, stockage, relecture authentifiée : demande l'API en marche. Le pipeline de compression est mesuré dans le navigateur. | phase 5 |
+| Toutes les migrations | Écrites et validées syntaxiquement, jamais exécutées contre PostgreSQL. Les tests d'intégration tournent sur pg-mem, qui a déjà divergé sur `= any($1)` et sur `DELETE`. | — |
+
+---
+
 ## Points ouverts (non tranchés)
 
 | # | Point | Phase concernée |
 |---|---|---|
 | **O1** | `defaillogramme.symptome_convergence` est décrit « lié à une EntreeSDCR » mais typé VARCHAR. Ajouter une FK `id_sdcr` ? | 8 |
-| **O2** | `mode_amdec` n'a aucun rattachement à `equipement` (seulement `composant` en texte) : le tableau de bord B4 ne peut pas filtrer par chaîne. Ajouter `id_equipement` ? | 6 |
 | **O4** | `TermeNomenclature` propre à un équipement (conforme au mémoire) → duplication des libellés courants sur les 4 chaînes. Rattachement à la `famille` avec surcharge ? | 4 |
 | **O6** | `archivee` : qui archive, sur quel critère ? | 4 |
 | **O7** | Format réel du CSV DimoMaint (colonnes) — extrait à fournir. | 6 |
@@ -343,3 +398,4 @@ s'y rattacher.
 | **O10** | Version **carrée** du pictogramme MaintXpert. Le symbole actuel est un demi-engrenage large (~2,9:1), coupé par le mot-symbole : dans une icône carrée il n'occupe qu'une bande centrale. Un SVG donnerait aussi des icônes nettes — la source est un bitmap de 215 px. | 9 |
 
 | **O11** | Motif de rejet et de renvoi en correction : exigé par l'interface mais non persisté, `entree_sdcr` n'ayant pas de champ pour cela. Le technicien voit sa fiche revenir sans savoir pourquoi. Ajouter `motif_decision TEXT` ? | 4 |
+
