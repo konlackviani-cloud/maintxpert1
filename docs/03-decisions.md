@@ -538,6 +538,31 @@ entier de travail hors ligne. L'effacer sur une expiration de jeton serait une p
 
 ---
 
+## D33 — Le pool PostgreSQL doit survivre à un réseau qui bouge
+**Statut :** décidé le 2026-08-23 (durcissement, défaut constaté en conditions réelles)
+
+Entre l'API et la base il y a un pooler distant et un poste qui change de réseau, se met en veille ou
+perd le Wi-Fi de l'usine. Le pool conservait alors des sockets mortes que Node ne détectait jamais :
+le serveur continuait d'accepter les connexions TCP mais **aucune requête n'aboutissait plus**.
+
+Constaté : l'écran affichait « Serveur injoignable » après 15 s d'attente, alors qu'une sonde directe
+obtenait ses 31 équipements en 2,3 s. Seul un redémarrage de l'API débloquait la situation — un
+diagnostic hors de portée d'un responsable maintenance.
+
+| Réglage | Rôle |
+|---|---|
+| `keepAlive` + `keepAliveInitialDelayMillis: 10 s` | détecter une socket morte au lieu d'attendre dessus |
+| `maxLifetimeSeconds: 900` | recycler avant que le pooler distant ne coupe de son côté |
+| `query_timeout` / `statement_timeout: 30 s` | aucune requête n'immobilise le serveur pour toujours |
+| `idle_in_transaction_session_timeout: 30 s` | une transaction oubliée ne retient pas une connexion |
+
+Le plafond de 30 s est calé sur l'import CSV DimoMaint, requête la plus lourde de l'API.
+
+La sonde de santé a son propre délai, **3 s** : une sonde qui met trente secondes à répondre « ça va
+mal » ne sert à rien. Elle doit dire vite que la base ne suit pas.
+
+---
+
 ## Lacunes de couverture connues
 
 | Quoi | Pourquoi | Où |
