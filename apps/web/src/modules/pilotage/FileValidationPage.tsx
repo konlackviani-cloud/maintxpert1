@@ -90,7 +90,7 @@ function LigneFile({
         {contribution.equipement.nom} · {contribution.equipement.chaine}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-        <span style={{ ...styleMono, fontSize: 12, color: 'var(--c-texte-secondaire)' }}>
+        <span style={{ ...styleMono, fontSize: 'var(--taille-xs)', color: 'var(--c-texte-secondaire)' }}>
           {contribution.contributeur.matricule}
         </span>
         {contribution.niveaux_libres > 0 && <Badge ton="alerte">saisie libre</Badge>}

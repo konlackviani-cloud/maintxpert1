@@ -113,7 +113,7 @@ export function CadreResponsable({
             <div style={{ fontSize: 14, fontWeight: 600 }}>
               {utilisateur?.prenom} {utilisateur?.nom}
             </div>
-            <div style={{ ...styleMono, fontSize: 12, color: 'var(--c-texte-secondaire)' }}>
+            <div style={{ ...styleMono, fontSize: 'var(--taille-xs)', color: 'var(--c-texte-secondaire)' }}>
               {utilisateur?.matricule} · Responsable
             </div>
           </div>

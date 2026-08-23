@@ -11,6 +11,7 @@
 import { normaliserMatricule, validerMatricule } from '@maintxpert/shared';
 import { useState, type FormEvent } from 'react';
 
+import { styleEtiquette } from '../../composants/ui/index.js';
 import { ErreurApi, ErreurReseau } from '../../lib/client-api.js';
 import { useSession } from './contexte-session.js';
 
@@ -234,13 +235,8 @@ export function ConnexionPage(): JSX.Element {
   );
 }
 
-const etiquette: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 700,
-  letterSpacing: '0.9px',
-  textTransform: 'uppercase',
-  color: 'var(--c-texte-secondaire)',
-};
+/** Libellé de champ : même style que les étiquettes de section. */
+const etiquette: React.CSSProperties = styleEtiquette;
 
 const champ: React.CSSProperties = {
   height: 64,

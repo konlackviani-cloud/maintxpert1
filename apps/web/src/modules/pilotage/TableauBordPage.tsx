@@ -37,9 +37,48 @@ import { CadreResponsable } from './CadreResponsable.js';
 /* Diagramme de Pareto — SVG, sans librairie de graphiques                     */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Découpe un libellé de cause sur plusieurs lignes, sans couper les mots.
+ *
+ * Le Pareto est LA figure du mémoire : une cause tronquée à quinze caractères
+ * — « déformations th… » — laisse une barre sans légende lisible. On préfère
+ * trois lignes courtes sous l'axe. Au-delà, l'ellipse est inévitable, mais le
+ * libellé entier reste accessible par l'infobulle SVG.
+ *
+ * Un mot plus long que la ligne n'est pas coupé : il déborde légèrement, ce qui
+ * se voit et se corrige, alors qu'une coupe silencieuse invente un mot.
+ */
+export function couperEnLignes(texte: string, maxCaracteres: number, maxLignes: number): string[] {
+  const lignes: string[] = [];
+  let courante = '';
+
+  for (const mot of texte.split(/\s+/)) {
+    const essai = courante === '' ? mot : `${courante} ${mot}`;
+    if (essai.length <= maxCaracteres) {
+      courante = essai;
+      continue;
+    }
+    if (courante !== '') lignes.push(courante);
+    courante = mot;
+
+    if (lignes.length === maxLignes) break;
+  }
+
+  if (lignes.length < maxLignes && courante !== '') lignes.push(courante);
+
+  // Débordement : on marque la dernière ligne, le texte complet reste en infobulle.
+  const reste = texte.split(/\s+/).join(' ').length > lignes.join(' ').length;
+  if (reste && lignes.length > 0) {
+    const derniere = lignes[lignes.length - 1]!;
+    lignes[lignes.length - 1] =
+      derniere.length > maxCaracteres - 1 ? `${derniere.slice(0, maxCaracteres - 1)}…` : `${derniere}…`;
+  }
+
+  return lignes;
+}
+
 function DiagrammePareto({ pareto }: { pareto: Pareto }): JSX.Element {
   const L = 840;
-  const H = 300;
   const [gauche, droite, haut, bas] = [55, 800, 20, 220];
   const largeurUtile = droite - gauche;
   const hauteurUtile = bas - haut;
@@ -57,6 +96,23 @@ function DiagrammePareto({ pareto }: { pareto: Pareto }): JSX.Element {
   const yPourcent = (p: number): number => bas - (p / 100) * hauteurUtile;
 
   const graduations = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(plafond * f));
+
+  // Place disponible sous chaque barre, en caractères : ~7,1 px par glyphe à
+  // 12 px. Le diviseur est volontairement plus large que la largeur moyenne
+  // réelle — il tient lieu de gouttière entre deux libellés voisins, qui sinon
+  // se touchent bord à bord.
+  const maxCaracteres = Math.max(10, Math.floor(pasX / 7.1));
+  const libelles = pareto.lignes.map((l) => couperEnLignes(l.cause, maxCaracteres, 3));
+  const nbLignesMax = Math.max(1, ...libelles.map((l) => l.length));
+
+  // Le diagramme grandit pour loger les libellés, plutôt que de les tronquer
+  // pour tenir dans une hauteur fixe. Le jambage de la dernière ligne descend
+  // sous sa ligne de base : l'oublier ferait mordre le texte sur la légende.
+  const INTERLIGNE = 14;
+  const JAMBAGE = 12;
+  const derniereLigneDeBase = bas + 20 + (nbLignesMax - 1) * INTERLIGNE;
+  const yLegende = derniereLigneDeBase + JAMBAGE + 12;
+  const H = yLegende + 38;
 
   return (
     <svg viewBox={`0 0 ${L} ${H}`} style={{ width: '100%', height: 'auto' }} role="img"
@@ -89,6 +145,8 @@ function DiagrammePareto({ pareto }: { pareto: Pareto }): JSX.Element {
 
       {pareto.lignes.map((ligne, i) => (
         <g key={ligne.cause}>
+          {/* Libellé complet au survol : l'ellipse ne doit jamais perdre l'information. */}
+          <title>{`${ligne.cause} — ${ligne.occurrences} arrêt${ligne.occurrences > 1 ? 's' : ''}`}</title>
           <rect
             x={centre(i) - largeurBarre / 2}
             y={yOccurrences(ligne.occurrences)}
@@ -103,7 +161,11 @@ function DiagrammePareto({ pareto }: { pareto: Pareto }): JSX.Element {
             {ligne.occurrences}
           </text>
           <text x={centre(i)} y={bas + 20} textAnchor="middle" fontSize={12} fill="var(--c-texte)">
-            {ligne.cause.length > 16 ? `${ligne.cause.slice(0, 15)}…` : ligne.cause}
+            {libelles[i]!.map((mot, n) => (
+              <tspan key={mot} x={centre(i)} dy={n === 0 ? 0 : INTERLIGNE}>
+                {mot}
+              </tspan>
+            ))}
           </text>
         </g>
       ))}
@@ -117,8 +179,8 @@ function DiagrammePareto({ pareto }: { pareto: Pareto }): JSX.Element {
           fill="var(--c-fond)" stroke="var(--c-alerte)" strokeWidth={2.5} />
       ))}
 
-      <rect x={gauche + 10} y={bas + 42} width={430} height={26} rx={4} fill="var(--c-primaire-clair)" />
-      <text x={gauche + 22} y={bas + 59} fontSize={13} fontWeight={600} fill="var(--c-primaire)">
+      <rect x={gauche + 10} y={yLegende} width={430} height={26} rx={4} fill="var(--c-primaire-clair)" />
+      <text x={gauche + 22} y={yLegende + 17} fontSize={13} fontWeight={600} fill="var(--c-primaire)">
         {pareto.nb_causes_seuil} cause{pareto.nb_causes_seuil > 1 ? 's' : ''} sur {nb} expliquent{' '}
         {Math.round(pareto.lignes[pareto.nb_causes_seuil - 1]?.cumul ?? 0)} % des arrêts
       </text>
@@ -361,7 +423,7 @@ export function TableauBordPage(): JSX.Element {
                     {analyse.pareto.total} arrêt{analyse.pareto.total > 1 ? 's' : ''}
                     {chaine ? ` · ${chaine}` : ''}
                   </span>
-                  <span style={{ marginLeft: 'auto', display: 'flex', gap: 14, fontSize: 12, color: 'var(--c-texte-secondaire)' }}>
+                  <span style={{ marginLeft: 'auto', display: 'flex', gap: 14, fontSize: 'var(--taille-xs)', color: 'var(--c-texte-secondaire)' }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                       <span style={{ width: 11, height: 11, background: 'var(--c-primaire)', borderRadius: 2 }} />arrêts
                     </span>

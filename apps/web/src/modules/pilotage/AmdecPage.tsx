@@ -10,7 +10,14 @@ import { COTATION_AMDEC_MAX, COTATION_AMDEC_MIN, SEUIL_IPR_CRITIQUE, estIPRCriti
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge, Chargement, EtatVide, Etiquette, styleMono } from '../../composants/ui/index.js';
+import {
+  Badge,
+  Chargement,
+  EtatVide,
+  Etiquette,
+  styleEtiquette,
+  styleMono,
+} from '../../composants/ui/index.js';
 import { listerChaines, listerEquipements } from '../../horsligne/depots.js';
 import { CadreResponsable } from './CadreResponsable.js';
 import {
@@ -450,10 +457,5 @@ export function AmdecPage(): JSX.Element {
   );
 }
 
-const styleEntete: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 700,
-  letterSpacing: '0.9px',
-  textTransform: 'uppercase',
-  color: 'var(--c-texte-secondaire)',
-};
+/** En-tête de colonne : même style que les étiquettes de section. */
+const styleEntete: React.CSSProperties = styleEtiquette;

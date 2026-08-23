@@ -8,6 +8,17 @@
 
 :root {
   /*
+   * Thème clair unique — fond blanc, décidé par le responsable du projet.
+   *
+   * Le suivi de `prefers-color-scheme` a été retiré : sur un poste Windows
+   * réglé en sombre, l'application virait au bleu nuit sans que personne ne
+   * l'ait demandé. `color-scheme: light` étend la consigne aux contrôles natifs
+   * — listes déroulantes, ascenseurs, sélecteurs de date — qui, autrement,
+   * restent sombres au milieu d'une page blanche.
+   */
+  color-scheme: light;
+
+  /*
    * --- Couleurs de marque ------------------------------------------------
    *
    * Échantillonnées dans design/logo/maintxpert.png par scripts/analyser-logo.mjs :
@@ -35,8 +46,22 @@
   --c-primaire-fonce: #1e4887;
   --c-primaire-clair: #e9f1fc;
 
-  /* --- Couleurs d'état (sémantique métier) -------------------------------- */
-  --c-succes: #15803d; /* validée, synchronisé */
+  /*
+   * --- Couleurs d'état (sémantique métier) --------------------------------
+   *
+   * Chaque teinte est portée sur SA propre tuile claire — c'est ainsi que les
+   * badges de statut sont composés. Ce sont donc ces couples-là qu'il faut
+   * mesurer, pas la teinte sur blanc. Ratios relevés au navigateur :
+   *
+   *   succès  sur --c-succes-clair    5,15:1
+   *   alerte  sur --c-alerte-clair    4,57:1
+   *   danger  sur --c-danger-clair    5,59:1
+   *   neutre  sur --c-fond-secondaire 6,99:1
+   *
+   * Le vert valait 4,46:1 en #15803d — sous le seuil AA, sur le badge le plus
+   * fréquent de l'application (« validée »). Assombri d'un cran, teinte inchangée.
+   */
+  --c-succes: #147536; /* validée, synchronisé */
   --c-succes-clair: #e7f5ec;
   --c-alerte: #b45309; /* en attente, récurrence signalée */
   --c-alerte-clair: #fdf3e3;
@@ -87,39 +112,6 @@
   --cible-tactile: 56px; /* plancher absolu — usage avec gants */
   --cible-tactile-lg: 72px; /* actions principales du parcours diagnostic */
   --largeur-contenu: 42rem;
-}
-
-/*
- * Mode sombre — quarts de nuit. Réduit l'éblouissement sans perdre le contraste.
- * Suivra la préférence système tant qu'un réglage explicite n'est pas implémenté.
- */
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Bleu du logo éclairci : 5,98:1 sur le fond sombre. */
-    --c-primaire: #4f9fff;
-    --c-primaire-fonce: #7db5ff;
-    --c-primaire-clair: #16304f;
-    --c-marque-bleu: #4f9fff;
-
-    --c-succes: #4ade80;
-    --c-succes-clair: #14291d;
-    --c-alerte: #fbbf24;
-    --c-alerte-clair: #2e2410;
-    --c-danger: #f87171;
-    --c-danger-clair: #2e1616;
-    --c-neutre-info: #94a3b8;
-
-    --c-fond: #0f172a;
-    --c-fond-secondaire: #1e293b;
-    --c-bordure: #334155;
-    --c-bordure-forte: #64748b;
-    --c-texte: #f1f5f9;
-    --c-texte-secondaire: #cbd5e1;
-    --c-texte-inverse: #0f172a;
-
-    --ombre: 0 1px 3px rgb(0 0 0 / 40%);
-    --ombre-lg: 0 4px 16px rgb(0 0 0 / 50%);
-  }
 }
 
 /* --- Réinitialisation minimale ------------------------------------------- */

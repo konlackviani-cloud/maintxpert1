@@ -56,8 +56,16 @@ export const IconeHorloge = (p: PropsIcone = {}) =>
 /* Typographie                                                                 */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Étiquette de section — « FILTRES », « NOUVEAU DIAGNOSTIC ».
+ *
+ * 13 px et pas 11 : `--taille-xs` est le plancher que le projet s'est donné, et
+ * ces libellés ne sont pas des mentions légales — ce sont les repères de
+ * structure que le technicien lit sous l'éclairage de l'atelier. La casse haute
+ * et l'interlettrage suffisent à les distinguer du texte courant.
+ */
 export const styleEtiquette: CSSProperties = {
-  fontSize: 11,
+  fontSize: 'var(--taille-xs)',
   fontWeight: 700,
   letterSpacing: '0.9px',
   textTransform: 'uppercase',
@@ -121,17 +129,48 @@ export function EnTete({
       )}
 
       <div style={{ flexGrow: 1, minWidth: 0, padding: retour ? 0 : '0 12px' }}>
-        <h1 style={{ fontSize: 19, fontWeight: 700, margin: 0, lineHeight: 1.25, textWrap: 'pretty' }}>
+        <h1
+          style={{
+            fontSize: 19,
+            fontWeight: 700,
+            margin: 0,
+            lineHeight: 1.25,
+            textWrap: 'pretty',
+            overflowWrap: 'anywhere',
+          }}
+        >
           {titre}
         </h1>
         {sousTitre && (
-          <p style={{ ...styleMono, fontSize: 13, color: 'var(--c-texte-secondaire)', margin: 0 }}>
+          /*
+           * Les repères d'équipement importés de DimoMaint sont longs et pleins
+           * de blocs insécables — « VKPV-12/2/1 ». Sans `anywhere`, ils
+           * poussaient l'en-tête au-delà de l'écran et la page défilait
+           * latéralement. Deux lignes suffisent à reconnaître la machine devant
+           * laquelle on se trouve ; le nom entier reste dans l'infobulle.
+           */
+          <p
+            title={sousTitre}
+            style={{
+              ...styleMono,
+              fontSize: 13,
+              color: 'var(--c-texte-secondaire)',
+              margin: 0,
+              overflowWrap: 'anywhere',
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: 2,
+              overflow: 'hidden',
+            }}
+          >
             {sousTitre}
           </p>
         )}
       </div>
 
-      {action}
+      {/* L'action garde sa largeur : sans cela, un nom d'équipement long la
+          comprimait jusqu'à rogner son libellé. */}
+      {action && <div style={{ flexShrink: 0 }}>{action}</div>}
     </header>
   );
 }
@@ -419,13 +458,15 @@ export function Badge({
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        height: 24,
+        // 13 px comme les étiquettes : un badge porte un statut de fiche, pas
+        // une décoration. « en attente de validation » doit se lire d'un coup.
+        height: 26,
         padding: '0 9px',
         borderRadius: 4,
         background: fond,
         border: `1px solid ${bordure}`,
         color: texte,
-        fontSize: 11,
+        fontSize: 'var(--taille-xs)',
         fontWeight: 600,
         whiteSpace: 'nowrap',
       }}

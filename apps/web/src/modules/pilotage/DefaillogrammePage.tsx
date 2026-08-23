@@ -383,7 +383,7 @@ export function DefaillogrammePage(): JSX.Element {
               <div style={{ ...styleMono, fontSize: 30, fontWeight: 600, color: 'var(--c-alerte)' }}>
                 {fiche.frequence_observee}
               </div>
-              <div style={{ fontSize: 12.5, color: 'var(--c-texte-secondaire)', lineHeight: 1.3 }}>
+              <div style={{ fontSize: 'var(--taille-xs)', color: 'var(--c-texte-secondaire)', lineHeight: 1.3 }}>
                 arrêts déjà observés
               </div>
             </div>

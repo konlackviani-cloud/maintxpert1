@@ -586,6 +586,52 @@ WHERE — le chemin A5, où le technicien retrouve une fiche existante, fait aut
 
 ---
 
+## D35 — Thème clair unique, et plancher typographique tenu
+**Statut :** décidé le 2026-08-23 par l'utilisateur (fond blanc), audit mesuré au navigateur
+
+Le suivi de `prefers-color-scheme` est retiré : sur un poste Windows réglé en sombre, l'application
+virait au bleu nuit sans que personne ne l'ait demandé. `color-scheme: light` étend la consigne aux
+contrôles natifs, qui restaient sombres au milieu d'une page blanche.
+
+Audit conduit sur les sept écrans responsable et le parcours technicien, en mesurant le DOM réel —
+pas à l'œil. Trois défauts corrigés :
+
+| Défaut | Constat | Correction |
+|---|---|---|
+| Badge « validée » | 4,46:1 sur sa tuile — sous AA, sur le badge le plus fréquent | `--c-succes` assombri à `#147536` → 5,15:1 |
+| Étiquettes à 11 px | Sous `--taille-xs`, le plancher que le projet s'est donné | Toutes ramenées à 13 px |
+| `styleEtiquette` recopié | Quatre copies locales avaient dérivé du style partagé | Copies supprimées, import unique |
+
+Les libellés d'axe du Pareto restent à 12 px : les rapprocher du plancher encombrerait le tracé, et
+ce sont des graduations, pas du texte courant.
+
+**Cibles tactiles.** Le parcours technicien tient les 56 px partout. Les écrans responsable
+descendent à 38–40 px : densité bureau assumée, souris, opérateur assis — au-dessus du minimum
+WCAG 2.5.8 (24 px), sous le niveau AAA (44 px).
+
+---
+
+## D36 — Durcissement : les noms d'équipement DimoMaint sont longs
+**Statut :** décidé le 2026-08-23 (durcissement, reproduit au navigateur)
+
+Un repère réel — `Soutireuse-boucheuse KRONES Mecafill VKPV-12/2/1 — poste 3 ligne embouteillage
+verre consigné`, 92 caractères — cassait deux endroits :
+
+- **`EnTete`** : le sous-titre poussait l'en-tête hors de l'écran, la page défilait latéralement, et
+  l'action de droite était comprimée jusqu'à rogner son libellé (« Fiche CSD » à 54 px pour 77 px de
+  texte). Corrigé par `overflow-wrap: anywhere`, deux lignes maximum avec le nom entier en infobulle,
+  et `flex-shrink: 0` sur l'action.
+- **Diagramme de Pareto** : les causes étaient tronquées à quinze caractères — « déformations th… »,
+  une barre sans légende exploitable sur LA figure du mémoire. Les libellés se répartissent
+  désormais sur trois lignes coupées aux espaces, le diagramme grandit pour les loger, et le libellé
+  complet reste en infobulle. `couperEnLignes` est couvert par sept tests.
+
+Vérifié : sept causes longues côte à côte, zéro chevauchement, gouttière de 11 px, 13 px avant la
+légende. Les sept écrans responsable et le parcours technicien ne débordent plus, à 390 px comme à
+1440 px.
+
+---
+
 ## Lacunes de couverture connues
 
 | Quoi | Pourquoi | Où |

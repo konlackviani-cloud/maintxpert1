@@ -15,7 +15,13 @@ import {
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useMemo, useState } from 'react';
 
-import { Badge, Chargement, EtatVide, styleMono } from '../../composants/ui/index.js';
+import {
+  Badge,
+  Chargement,
+  EtatVide,
+  styleEtiquette,
+  styleMono,
+} from '../../composants/ui/index.js';
 import { baseLocale } from '../../horsligne/db.js';
 import { CadreResponsable } from './CadreResponsable.js';
 
@@ -213,8 +219,7 @@ export function RecherchePage(): JSX.Element {
               <thead>
                 <tr style={{ background: 'var(--c-fond-secondaire)' }}>
                   {['Équipement', 'Symptôme', 'Défaut', 'Cause', 'Fréq.', 'Statut'].map((t) => (
-                    <th key={t} style={{ ...cellule, fontSize: 11, fontWeight: 700, letterSpacing: '0.9px',
-                      textTransform: 'uppercase', color: 'var(--c-texte-secondaire)' }}>
+                    <th key={t} style={{ ...cellule, ...styleEtiquette, textAlign: 'left' }}>
                       {t}
                     </th>
                   ))}
@@ -227,7 +232,7 @@ export function RecherchePage(): JSX.Element {
                     <tr key={fiche.id_sdcr}>
                       <td style={cellule}>
                         <div style={{ fontWeight: 600 }}>{equipement?.nom ?? '—'}</div>
-                        <div style={{ ...styleMono, fontSize: 12, color: 'var(--c-texte-secondaire)' }}>
+                        <div style={{ ...styleMono, fontSize: 'var(--taille-xs)', color: 'var(--c-texte-secondaire)' }}>
                           {equipement?.chaine}
                         </div>
                       </td>

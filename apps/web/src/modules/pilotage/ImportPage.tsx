@@ -19,7 +19,14 @@ import {
 } from '@maintxpert/shared';
 import { useMemo, useRef, useState } from 'react';
 
-import { Badge, EtatVide, Etiquette, IconeValider, styleMono } from '../../composants/ui/index.js';
+import {
+  Badge,
+  EtatVide,
+  Etiquette,
+  IconeValider,
+  styleEtiquette,
+  styleMono,
+} from '../../composants/ui/index.js';
 import { CadreResponsable } from './CadreResponsable.js';
 import { importerEquipements, messageErreurPilotage } from './api.js';
 
@@ -362,10 +369,5 @@ export function ImportPage(): JSX.Element {
   );
 }
 
-const styleEntete: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 700,
-  letterSpacing: '0.9px',
-  textTransform: 'uppercase',
-  color: 'var(--c-texte-secondaire)',
-};
+/** En-tête de colonne : même style que les étiquettes de section. */
+const styleEntete: React.CSSProperties = styleEtiquette;
