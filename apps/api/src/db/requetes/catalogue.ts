@@ -1,10 +1,12 @@
-/** Lecture des référentiels : équipements, nomenclature, configuration. */
+﻿/** Lecture des référentiels : équipements, nomenclature, configuration. */
 
 import type {
   EntreeConfiguration,
   EntreeSDCR,
   Equipement,
   Intervention,
+  ModeAMDEC,
+  RoleUtilisateur,
   TermeNomenclature,
 } from '@maintxpert/shared';
 import { requete } from '../client.js';
@@ -34,37 +36,83 @@ export const listerConfiguration = (): Promise<EntreeConfiguration[]> =>
   requete<EntreeConfiguration>('select cle, valeur, description from configuration');
 
 /**
- * Fiches consultables par les techniciens : validées uniquement (FP1), plus
- * les contributions de l'utilisateur lui-même quel que soit leur statut —
- * sans quoi il ne verrait pas ce qu'il vient de saisir (A12).
+ * Fiches descendues dans le cache.
+ *
+ * Technicien : validées uniquement (FP1), plus ses propres contributions quel
+ * que soit leur statut — sans quoi il ne verrait pas ce qu'il vient de saisir (A12).
+ *
+ * Responsable : tout. Son tableau de bord doit compter les fiches en attente et
+ * calculer le taux de recours à la nomenclature libre (B5) ; le restreindre aux
+ * fiches validées fausserait les deux.
  */
-export function listerEntreesSDCR(idUtilisateur: number, depuis?: string): Promise<EntreeSDCR[]> {
-  const filtreDate = depuis ? 'and date_modification > $2' : '';
-  const parametres: unknown[] = depuis ? [idUtilisateur, depuis] : [idUtilisateur];
+export function listerEntreesSDCR(
+  idUtilisateur: number,
+  role: RoleUtilisateur,
+  depuis?: string,
+): Promise<EntreeSDCR[]> {
+  const parametres: unknown[] = [];
+  const conditions: string[] = [];
+
+  if (role !== 'responsable') {
+    parametres.push(idUtilisateur);
+    conditions.push(`(statut = 'validee' or id_contributeur = $${parametres.length})`);
+  }
+  if (depuis) {
+    parametres.push(depuis);
+    conditions.push(`date_modification > $${parametres.length}`);
+  }
+
+  const filtre = conditions.length > 0 ? `where ${conditions.join(' and ')}` : '';
 
   return requete<EntreeSDCR>(
-    `select ${COLONNES_SDCR}
-       from entree_sdcr
-      where (statut = 'validee' or id_contributeur = $1)
-        ${filtreDate}
-      order by date_modification`,
+    `select ${COLONNES_SDCR} from entree_sdcr ${filtre} order by date_modification`,
     parametres,
   );
 }
 
-/** Interventions du technicien — pour retrouver un chantier en cours après rechargement. */
-export function listerInterventions(idTechnicien: number, depuis?: string): Promise<Intervention[]> {
-  const filtreDate = depuis ? 'and datetime_ouverture > $2' : '';
-  const parametres: unknown[] = depuis ? [idTechnicien, depuis] : [idTechnicien];
+/**
+ * Interventions descendues dans le cache.
+ *
+ * Technicien : les siennes, pour retrouver un chantier en cours après un
+ * rechargement. Responsable : toutes — le TTDi médian (B5) porte sur l'ensemble
+ * du service, pas sur ses propres interventions, qu'il n'a pas.
+ */
+export function listerInterventions(
+  idUtilisateur: number,
+  role: RoleUtilisateur,
+  depuis?: string,
+): Promise<Intervention[]> {
+  const parametres: unknown[] = [];
+  const conditions: string[] = [];
+
+  if (role !== 'responsable') {
+    parametres.push(idUtilisateur);
+    conditions.push(`id_technicien = $${parametres.length}`);
+  }
+  if (depuis) {
+    parametres.push(depuis);
+    conditions.push(`datetime_ouverture > $${parametres.length}`);
+  }
+
+  const filtre = conditions.length > 0 ? `where ${conditions.join(' and ')}` : '';
 
   return requete<Intervention>(
     `select id_intervention, id_technicien, id_equipement, id_sdcr,
             datetime_ouverture, datetime_cause_confirmee, datetime_cloture
        from intervention
-      where id_technicien = $1
-        ${filtreDate}
+       ${filtre}
       order by datetime_ouverture desc
-      limit 200`,
+      limit 2000`,
     parametres,
   );
 }
+
+/** Modes AMDEC — descendus en entier pour que le tableau de bord (B4) tienne hors ligne. */
+export const listerModesAmdec = (): Promise<ModeAMDEC[]> =>
+  requete<ModeAMDEC>(
+    `select id_mode, id_equipement, composant, mode_defaillance, cause, effet,
+            gravite, frequence, detection, ipr
+       from mode_amdec
+      order by ipr desc`,
+  );
+

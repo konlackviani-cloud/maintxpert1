@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Test d'intégration du moteur de synchronisation, de la mutation au SQL.
  *
  * PostgreSQL simulé en mémoire (pg-mem). Ce qui est vérifié ici est ce qui
@@ -78,6 +78,13 @@ beforeEach(() => {
       datetime_cause_confirmee timestamptz, datetime_cloture timestamptz);
 
     create table configuration (cle varchar(50) primary key, valeur varchar(255) not null, description text not null);
+
+    create table mode_amdec (
+      id_mode serial primary key, id_equipement integer not null,
+      composant varchar(150) not null, mode_defaillance varchar(150) not null,
+      cause varchar(150) not null, effet varchar(150) not null,
+      gravite integer not null, frequence integer not null, detection integer not null,
+      ipr integer not null default 0);
 
     create table fiche_csd (
       id_csd serial primary key, id_equipement integer not null unique,
@@ -368,7 +375,7 @@ describe('confirmation de cause', () => {
 
 describe('instantané descendant', () => {
   it('renvoie les fiches validées ET les contributions de l’utilisateur', async () => {
-    const instantane = await construireInstantane(TECHNICIEN);
+    const instantane = await construireInstantane(TECHNICIEN, 'technicien');
 
     const statuts = instantane.entrees_sdcr.map((e) => e.statut).sort();
     expect(statuts).toEqual(['en_attente', 'validee']);
@@ -378,19 +385,20 @@ describe('instantané descendant', () => {
   });
 
   it('embarque toujours les fiches CSD — A7 doit fonctionner hors ligne', async () => {
-    const complet = await construireInstantane(TECHNICIEN);
+    const complet = await construireInstantane(TECHNICIEN, 'technicien');
     expect(complet.fiches_csd).toHaveLength(1);
     expect(complet.fiches_csd[0]!.photo_url).toBe('photo-ref.webp');
 
     // Même sur un instantané partiel : une fiche CSD absente du cache rendrait
     // l'écran A7 vide sans réseau, alors que rien n'a changé côté serveur.
-    const partiel = await construireInstantane(TECHNICIEN, '2030-01-01T00:00:00.000Z');
+    const partiel = await construireInstantane(TECHNICIEN, 'technicien', '2030-01-01T00:00:00.000Z');
     expect(partiel.fiches_csd).toHaveLength(1);
   });
 
   it('se déclare partiel quand un curseur est fourni', async () => {
-    const instantane = await construireInstantane(TECHNICIEN, '2030-01-01T00:00:00.000Z');
+    const instantane = await construireInstantane(TECHNICIEN, 'technicien', '2030-01-01T00:00:00.000Z');
     expect(instantane.partiel).toBe(true);
     expect(instantane.entrees_sdcr).toHaveLength(0);
   });
 });
+

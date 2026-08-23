@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Moteur de synchronisation — couche 2, autorité sur les écritures.
  *
  * Le sens montant traite une file de mutations produites hors ligne. Trois
@@ -21,6 +21,7 @@ import {
   type InstantaneSync,
   type MutationSortante,
   type ResultatMutation,
+  type RoleUtilisateur,
 } from '@maintxpert/shared';
 
 import {
@@ -28,6 +29,7 @@ import {
   listerEntreesSDCR,
   listerEquipements,
   listerInterventions,
+  listerModesAmdec,
   listerTermesActifs,
 } from '../../db/requetes/catalogue.js';
 import { listerFichesCSD } from '../../db/requetes/csd.js';
@@ -53,20 +55,24 @@ import {
  */
 export async function construireInstantane(
   idUtilisateur: number,
+  role: RoleUtilisateur,
   depuis?: string,
 ): Promise<InstantaneSync> {
   const horodatage = new Date().toISOString();
 
-  const [equipements, termes, configuration, entrees, interventions, fichesCsd] = await Promise.all([
-    listerEquipements(),
-    listerTermesActifs(),
-    listerConfiguration(),
-    listerEntreesSDCR(idUtilisateur, depuis),
-    listerInterventions(idUtilisateur, depuis),
-    // Toujours en entier : une fiche par équipement, quelques dizaines de lignes.
-    // A7 doit fonctionner sans réseau, donc elles ne peuvent pas manquer du cache.
-    listerFichesCSD(),
-  ]);
+  const [equipements, termes, configuration, entrees, interventions, fichesCsd, modesAmdec] =
+    await Promise.all([
+      listerEquipements(),
+      listerTermesActifs(),
+      listerConfiguration(),
+      listerEntreesSDCR(idUtilisateur, role, depuis),
+      listerInterventions(idUtilisateur, role, depuis),
+      // Toujours en entier : une fiche par équipement, quelques dizaines de lignes.
+      // A7 doit fonctionner sans réseau, donc elles ne peuvent pas manquer du cache.
+      listerFichesCSD(),
+      // Idem pour l'AMDEC : le tableau de bord est de la consultation.
+      listerModesAmdec(),
+    ]);
 
   return {
     horodatage,
@@ -76,6 +82,7 @@ export async function construireInstantane(
     configuration,
     entrees_sdcr: entrees,
     fiches_csd: fichesCsd,
+    modes_amdec: modesAmdec,
     interventions,
   };
 }
@@ -242,3 +249,4 @@ export async function appliquerLot(
 
   return resultats;
 }
+

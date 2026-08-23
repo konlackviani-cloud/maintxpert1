@@ -99,6 +99,9 @@ export interface FicheCSD {
 
 export interface ModeAMDEC {
   id_mode: number;
+  /** Équipement analysé (migration 0011, résout O2). */
+  id_equipement: number;
+  /** Pièce à l'intérieur de l'équipement, pas la machine elle-même. */
   composant: string;
   mode_defaillance: string;
   cause: string;

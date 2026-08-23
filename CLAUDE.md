@@ -181,11 +181,12 @@ npm run db:reset         # rejoue migrations + seed
 | 4 | Nomenclature & validation B1, B2 | fait |
 | 5 | CSD & photos A7, B6 | fait |
 | 6 | AMDEC & import CSV B4, B7 | fait |
-| 7 | Dashboard B5, B3 | à faire |
+| 7 | Tableau de bord B5, B3 | fait |
 | 8 | Défaillogramme B8 | à faire |
 | 9 | Durcissement, tests, mesure TTDi | à faire |
 
 **Ne pas passer à la phase suivante sans validation explicite de l'utilisateur.**
+
 
 
 

@@ -375,6 +375,47 @@ internes fusionnés, `ch02` normalisé, lignes fautives rejetées avec leur num�
 
 ---
 
+## D25 — Le tableau de bord lit le cache, pas le réseau
+**Statut :** décidé le 2026-08-23 (phase 7)
+
+Contrairement à la validation et à la nomenclature (D17), le tableau de bord (B5) et la recherche
+avancée (B3) sont de la **consultation** : la règle « hors ligne d'abord » s'y applique pleinement.
+Pareto, indicateurs et filtres sont calculés dans le navigateur, sur IndexedDB.
+
+Conséquence sur la synchronisation descendante, désormais **sensible au rôle** :
+
+| | Technicien | Responsable |
+|---|---|---|
+| Fiches SDCR | validées + ses contributions | **toutes** |
+| Interventions | les siennes | **toutes** |
+| Modes AMDEC | tous | tous |
+| Fiches CSD | toutes | toutes |
+
+Le responsable a besoin des fiches en attente pour son compteur de file, et de toutes les
+interventions pour le TTDi médian du service — le restreindre fausserait les deux indicateurs.
+
+---
+
+## D26 — Pareto pondéré par la fréquence observée
+**Statut :** décidé le 2026-08-23 (phase 7)
+
+`construirePareto()` somme `frequence_observee`, **pas** le nombre de fiches : une cause constatée
+douze fois pèse douze arrêts, pas un. C'est cette pondération qui fait du Pareto un outil de
+décision plutôt qu'un inventaire.
+
+Deux choix qui en découlent :
+
+- **La cause qui fait franchir le seuil en fait partie.** Avec 50 / 30 / 20, le cumul atteint 80 %
+  à la deuxième : `nb_causes_seuil = 2`. C'est bien elle qu'il faut traiter pour atteindre les 80 %.
+- **Médiane, pas moyenne**, pour le TTDi et la durée totale. Une seule intervention laissée ouverte
+  toute une nuit décalerait la moyenne au point de la rendre inutilisable ; la médiane décrit le cas
+  courant. Un test le vérifie sur une valeur aberrante.
+
+Le taux de nomenclature libre (**B5**) se calcule sur les fiches **validées** : c'est ce que voit le
+technicien qui cherche, donc ce que l'indicateur doit mesurer.
+
+---
+
 ## Lacunes de couverture connues
 
 | Quoi | Pourquoi | Où |

@@ -1,4 +1,4 @@
-/** Routes de synchronisation — le SEUL point de contact PWA ↔ API en usage courant. */
+﻿/** Routes de synchronisation — le SEUL point de contact PWA ↔ API en usage courant. */
 
 import { schemaPull, schemaPush, type MutationSortante } from '@maintxpert/shared';
 import { Router, type NextFunction, type Request, type Response } from 'express';
@@ -33,7 +33,13 @@ routesSync.get(
 
     res
       .status(200)
-      .json(await construireInstantane(req.utilisateur!.id_utilisateur, analyse.data.depuis));
+      .json(
+        await construireInstantane(
+          req.utilisateur!.id_utilisateur,
+          req.utilisateur!.role,
+          analyse.data.depuis,
+        ),
+      );
   }),
 );
 
@@ -57,3 +63,4 @@ routesSync.post(
     res.status(200).json({ resultats });
   }),
 );
+

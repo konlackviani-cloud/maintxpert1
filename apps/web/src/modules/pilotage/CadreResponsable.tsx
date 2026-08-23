@@ -10,10 +10,12 @@ import { styleMono } from '../../composants/ui/index.js';
 import { useSession } from '../auth/contexte-session.js';
 
 const ONGLETS: { chemin: string; libelle: string }[] = [
+  { chemin: '/pilotage', libelle: 'Tableau de bord' },
   { chemin: '/pilotage/validation', libelle: 'Validation' },
   { chemin: '/pilotage/nomenclature', libelle: 'Nomenclature' },
   { chemin: '/pilotage/csd', libelle: 'Fiches CSD' },
   { chemin: '/pilotage/amdec', libelle: 'AMDEC' },
+  { chemin: '/pilotage/recherche', libelle: 'Recherche' },
   { chemin: '/pilotage/import', libelle: 'Import' },
 ];
 
@@ -68,6 +70,7 @@ export function CadreResponsable({
             <NavLink
               key={onglet.chemin}
               to={onglet.chemin}
+              end={onglet.chemin === '/pilotage'}
               style={({ isActive }) => ({
                 display: 'flex',
                 alignItems: 'center',
@@ -153,5 +156,6 @@ export function CadreResponsable({
     </div>
   );
 }
+
 
 

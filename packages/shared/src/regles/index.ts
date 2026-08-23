@@ -5,3 +5,5 @@ export * from './recurrence.js';
 export * from './statut-sdcr.js';
 export * from './csv.js';
 
+export * from './pareto.js';
+

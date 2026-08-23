@@ -11,6 +11,8 @@ import { ResultatsPage } from './modules/diagnostic/ResultatsPage.js';
 import { SymptomePage } from './modules/diagnostic/SymptomePage.js';
 import { FichePage } from './modules/sdcr/FichePage.js';
 import { FicheCSDPage } from './modules/csd/FicheCSDPage.js';
+import { RecherchePage } from './modules/pilotage/RecherchePage.js';
+import { TableauBordPage } from './modules/pilotage/TableauBordPage.js';
 import { AmdecPage } from './modules/pilotage/AmdecPage.js';
 import { ImportPage } from './modules/pilotage/ImportPage.js';
 import { CsdPage } from './modules/pilotage/CsdPage.js';
@@ -83,11 +85,11 @@ export function App(): JSX.Element {
             path="/pilotage/nomenclature"
             element={<Responsable><NomenclaturePage /></Responsable>}
           />
-          {/* Le tableau de bord (B5) arrive en phase 7 ; d'ici là, la file fait l'accueil. */}
           <Route path="/pilotage/csd" element={<Responsable><CsdPage /></Responsable>} />
           <Route path="/pilotage/amdec" element={<Responsable><AmdecPage /></Responsable>} />
           <Route path="/pilotage/import" element={<Responsable><ImportPage /></Responsable>} />
-          <Route path="/pilotage" element={<Navigate to="/pilotage/validation" replace />} />
+          <Route path="/pilotage/recherche" element={<Responsable><RecherchePage /></Responsable>} />
+          <Route path="/pilotage" element={<Responsable><TableauBordPage /></Responsable>} />
 
           <Route path="/" element={<Racine />} />
           <Route path="*" element={<Racine />} />
@@ -96,5 +98,6 @@ export function App(): JSX.Element {
     </Routeur>
   );
 }
+
 
 

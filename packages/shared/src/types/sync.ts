@@ -14,6 +14,7 @@ import type {
   Equipement,
   FicheCSD,
   Intervention,
+  ModeAMDEC,
   TermeNomenclature,
 } from './entites.js';
 
@@ -31,6 +32,8 @@ export interface InstantaneSync {
   entrees_sdcr: EntreeSDCR[];
   /** Fiches CSD — descendues en entier : A7 doit fonctionner hors ligne. */
   fiches_csd: FicheCSD[];
+  /** Modes AMDEC — le tableau de bord (B4, B5) est de la consultation, donc hors ligne. */
+  modes_amdec: ModeAMDEC[];
   configuration: EntreeConfiguration[];
   interventions: Intervention[];
 }
@@ -117,4 +120,5 @@ export interface ResultatMutation {
 export interface ReponsePush {
   resultats: ResultatMutation[];
 }
+
 
