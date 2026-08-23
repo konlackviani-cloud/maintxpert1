@@ -2,6 +2,7 @@
 
 import { Navigate, Route, BrowserRouter as Routeur, Routes } from 'react-router-dom';
 
+import { AlerteCacheBloque } from './app/AlerteCacheBloque.js';
 import { ExigeRole, RedirigeSiConnecte, accueilDuRole } from './app/gardes.js';
 import { ConnexionPage } from './modules/auth/ConnexionPage.js';
 import { FournisseurSession, useSession } from './modules/auth/contexte-session.js';
@@ -43,6 +44,7 @@ export function App(): JSX.Element {
   return (
     <Routeur>
       <FournisseurSession>
+        <AlerteCacheBloque />
         <Synchronisation />
 
         <Routes>

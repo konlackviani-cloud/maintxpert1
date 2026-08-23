@@ -132,6 +132,40 @@ export class BaseLocale extends Dexie {
 export const baseLocale = new BaseLocale();
 
 /* -------------------------------------------------------------------------- */
+/* Mise à niveau du schéma entre onglets                                       */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * IndexedDB ne met à niveau un schéma que si AUCUNE autre connexion ne le
+ * tient ouvert. Sans les deux gestionnaires ci-dessous, un onglet resté ouvert
+ * sur une version précédente bloque indéfiniment le nouveau : Dexie n'ouvre
+ * jamais la base, toutes les lectures restent en attente, et l'écran affiche un
+ * « Chargement… » éternel sans dire pourquoi. Défaut constaté en conditions
+ * réelles.
+ */
+
+/** L'onglet ANCIEN se retire pour laisser passer la mise à niveau. */
+baseLocale.on('versionchange', () => {
+  baseLocale.close();
+  return true;
+});
+
+/** L'onglet NOUVEAU est bloqué : on le dit, au lieu de tourner dans le vide. */
+let signalerBlocage: (() => void) | null = null;
+
+baseLocale.on('blocked', () => {
+  console.warn(
+    '[horsligne] mise à niveau du cache bloquée par un autre onglet de MaintXpert.',
+  );
+  signalerBlocage?.();
+});
+
+/** Permet à l'interface d'afficher un message actionnable. */
+export function surBlocageCache(rappel: () => void): void {
+  signalerBlocage = rappel;
+}
+
+/* -------------------------------------------------------------------------- */
 /* Métadonnées de synchronisation                                              */
 /* -------------------------------------------------------------------------- */
 
