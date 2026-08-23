@@ -1,4 +1,4 @@
-﻿# Journal des décisions (ADR)
+# Journal des décisions (ADR)
 
 Toute décision qui s'écarte du cahier des charges, ou qui l'interprète, est consignée ici.
 

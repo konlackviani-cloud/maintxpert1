@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Assemblage de l'application Express.
  * Séparé de index.ts pour rester testable sans ouvrir de port.
  */

@@ -1,4 +1,4 @@
-﻿/** Lecture des référentiels : équipements, nomenclature, configuration. */
+/** Lecture des référentiels : équipements, nomenclature, configuration. */
 
 import type {
   Defaillogramme,

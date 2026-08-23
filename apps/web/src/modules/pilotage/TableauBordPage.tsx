@@ -1,4 +1,4 @@
-﻿/**
+/**
  * B5 / UC4 — tableau de bord du responsable.
  *
  * Lu depuis le cache IndexedDB, jamais du réseau : c'est de la CONSULTATION, et

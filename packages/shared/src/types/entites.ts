@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Entités du domaine — miroir du dictionnaire de données (mémoire, section 3),
  * augmenté des trois ajouts validés (voir docs/03-decisions.md, D5).
  *

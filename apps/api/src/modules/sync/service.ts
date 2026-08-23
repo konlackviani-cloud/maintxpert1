@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Moteur de synchronisation — couche 2, autorité sur les écritures.
  *
  * Le sens montant traite une file de mutations produites hors ligne. Trois

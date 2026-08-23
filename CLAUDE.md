@@ -1,4 +1,4 @@
-﻿# MaintXpert — contexte projet
+# MaintXpert — contexte projet
 
 PWA de diagnostic guidé des défaillances industrielles. Mémoire d'ingénieur génie mécanique,
 SABC, usine Terrain Court (Yaoundé) — 4 chaînes d'embouteillage : CH02, CH05, CH06, CH09.

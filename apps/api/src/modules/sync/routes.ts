@@ -1,4 +1,4 @@
-﻿/** Routes de synchronisation — le SEUL point de contact PWA ↔ API en usage courant. */
+/** Routes de synchronisation — le SEUL point de contact PWA ↔ API en usage courant. */
 
 import { schemaPull, schemaPush, type MutationSortante } from '@maintxpert/shared';
 import { Router, type NextFunction, type Request, type Response } from 'express';

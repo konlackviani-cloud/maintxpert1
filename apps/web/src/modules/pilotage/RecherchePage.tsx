@@ -1,4 +1,4 @@
-﻿/**
+/**
  * B3 — recherche avancée dans la base SDCR, filtres combinés.
  *
  * Comme le tableau de bord, elle travaille sur le cache : c'est de la

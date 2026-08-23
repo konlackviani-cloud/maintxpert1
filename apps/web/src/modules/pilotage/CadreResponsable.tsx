@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Cadre des écrans responsable : navigation horizontale persistante.
  * Densité bureau — texte à 15 px, l'utilisateur est assis et à la souris.
  */

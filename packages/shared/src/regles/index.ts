@@ -1,4 +1,4 @@
-﻿export * from './recherche-frequence.js';
+export * from './recherche-frequence.js';
 export * from './matricule.js';
 export * from './ipr.js';
 export * from './recurrence.js';

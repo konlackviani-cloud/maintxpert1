@@ -1,4 +1,4 @@
-﻿/**
+/**
  * A6 / A10 — documenter une nouvelle fiche SDCR.
  *
  * Quatre niveaux dans l'ordre du modèle : symptôme → défaut → cause → remède.

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * B3 / B5 / UC4 — filtres combinés, Pareto des causes et indicateurs de suivi.
  *
  * Fonctions pures, exécutées côté PWA sur le cache IndexedDB : le tableau de

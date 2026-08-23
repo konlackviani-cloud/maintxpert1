@@ -1,4 +1,4 @@
-﻿/** Coquille applicative : routage, session, synchronisation de fond. */
+/** Coquille applicative : routage, session, synchronisation de fond. */
 
 import { Navigate, Route, BrowserRouter as Routeur, Routes } from 'react-router-dom';
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Contrat de synchronisation entre la PWA et l'API.
  *
  * Deux sens, volontairement dissymétriques :

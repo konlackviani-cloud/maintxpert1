@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Accès API du responsable maintenance (B1, B2).
  *
  * EXCEPTION ASSUMÉE à la règle « hors ligne d'abord » : ces écrans appellent le

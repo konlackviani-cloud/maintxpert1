@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Test d'intégration du moteur de synchronisation, de la mutation au SQL.
  *
  * PostgreSQL simulé en mémoire (pg-mem). Ce qui est vérifié ici est ce qui

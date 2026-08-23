@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Moteur de synchronisation.
  *
  * Ordre imposé : on POUSSE avant de TIRER. Sinon un instantané descendant
