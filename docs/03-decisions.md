@@ -43,8 +43,8 @@ renseignées.
 
 ---
 
-## D4 — Environnement Supabase : local via CLI, **Docker absent du poste**
-**Statut :** validé le 2026-08-22, **avec réserve**
+## D4 — Environnement Supabase : projet distant
+**Statut :** validé le 2026-08-22, **réserve levée le 2026-08-23**
 
 Décision retenue : stack Supabase locale (`npm run db:start`), migrations versionnées dans le dépôt.
 
@@ -500,7 +500,6 @@ explicitement au technicien — « rien n'est perdu ».
 | `supprimerMode` (AMDEC) | pg-mem refuse tout `DELETE` sur une table portant une colonne `generated always as … stored` ; PostgreSQL l'accepte. Reproduire le cas exigerait de retirer du schéma de test précisément ce que les autres tests vérifient. | `amdec.integration.test.ts` |
 | Aller-retour photo complet | Envoi, stockage, relecture authentifiée : demande l'API en marche. Le pipeline de compression est mesuré dans le navigateur. | phase 5 |
 | Enregistrement du service worker sur le build de production | Le sw.js produit est correct — vérifié par inspection : 15 entrées préchargées dont index.html, route de navigation pour la coquille hors ligne, /api/ en NetworkOnly, images en CacheFirst. Le manifeste satisfait tous les critères d'installabilité Android. Le service worker s'enregistre bien en développement. Sous ite preview, dans le navigateur embarqué, l'enregistrement échoue sur une erreur opaque non résolue. **À vérifier sur un vrai Chrome / un vrai terminal Android.** | phase 9 |
-| Toutes les migrations | Écrites et validées syntaxiquement, jamais exécutées contre PostgreSQL. Les tests d'intégration tournent sur pg-mem, qui a déjà divergé sur `= any($1)` et sur `DELETE`. | — |
 
 ---
 
@@ -516,6 +515,7 @@ explicitement au technicien — « rien n'est perdu ».
 | **O10** | Version **carrée** du pictogramme MaintXpert. Le symbole actuel est un demi-engrenage large (~2,9:1), coupé par le mot-symbole : dans une icône carrée il n'occupe qu'une bande centrale. Un SVG donnerait aussi des icônes nettes — la source est un bitmap de 215 px. | 9 |
 
 | **O11** | Motif de rejet et de renvoi en correction : exigé par l'interface mais non persisté, `entree_sdcr` n'ayant pas de champ pour cela. Le technicien voit sa fiche revenir sans savoir pourquoi. Ajouter `motif_decision TEXT` ? | 4 |
+
 
 
 
