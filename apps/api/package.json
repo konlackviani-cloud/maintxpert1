@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "@maintxpert/api",
   "version": "1.0.0",
   "private": true,
@@ -10,7 +10,8 @@
     "build": "tsup src/index.ts --format esm --target node20 --out-dir dist --clean",
     "test": "vitest run --passWithNoTests",
     "typecheck": "tsc --noEmit",
-    "creer-utilisateur": "tsx --env-file-if-exists=.env scripts/creer-utilisateur.ts"
+    "creer-utilisateur": "tsx --env-file-if-exists=.env scripts/creer-utilisateur.ts",
+    "migrer": "node --env-file-if-exists=.env scripts/appliquer-migrations.mjs"
   },
   "dependencies": {
     "@maintxpert/shared": "*",
@@ -36,3 +37,4 @@
     "vitest": "^3.0.5"
   }
 }
+

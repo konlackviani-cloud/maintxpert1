@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "maintxpert",
   "version": "1.0.0",
   "private": true,
@@ -16,6 +16,7 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "icones": "node scripts/generer-icones.mjs",
     "creer-utilisateur": "npm run creer-utilisateur --workspace @maintxpert/api --",
+    "migrer": "npm run migrer --workspace @maintxpert/api --",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
@@ -31,3 +32,4 @@
     "node": ">=20"
   }
 }
+
