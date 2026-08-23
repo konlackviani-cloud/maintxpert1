@@ -46,12 +46,22 @@ renseignées.
 ## D4 — Environnement Supabase : projet distant
 **Statut :** validé le 2026-08-22, **réserve levée le 2026-08-23**
 
-Décision retenue : stack Supabase locale (`npm run db:start`), migrations versionnées dans le dépôt.
+Décision initiale : stack Supabase locale via la CLI. Docker Desktop n'étant pas installé sur le
+poste, elle n'a pas pu servir.
 
-**Réserve constatée à l'exécution :** Docker Desktop n'est pas installé sur le poste de
-développement. `supabase start` ne peut donc pas s'exécuter en l'état. Les migrations sont écrites
-et versionnées ; leur application nécessite soit l'installation de Docker Desktop, soit un repli
-temporaire sur un projet Supabase distant (`DATABASE_URL` dans `apps/api/.env`).
+**Repli retenu :** un projet **Supabase distant** (région West EU / Irlande), joint par le *session
+pooler* — la connexion directe passe par IPv6, que beaucoup de réseaux ne routent pas, et le
+*transaction pooler* gère mal les requêtes préparées de node-postgres.
+
+L'application des migrations passe par un applicateur écrit à la main (`npm run migrer`) plutôt que
+par la CLI Supabase, qui exige Docker. Il joue les fichiers dans l'ordre contre n'importe quelle
+instance PostgreSQL joignable, chacun **dans une transaction**, avec suivi dans `schema_migrations` :
+une migration qui échoue est intégralement annulée, la base n'est jamais laissée à moitié migrée.
+
+**Réserve levée le 2026-08-23.** Les douze migrations ont été appliquées contre le vrai PostgreSQL
+**du premier coup**, sans aucune divergence avec ce que pg-mem laissait attendre. Chaîne complète
+vérifiée sur la base réelle : sonde de santé, connexion par matricule, instantané de synchronisation
+(31 équipements sur les 4 chaînes, 2 clés de configuration), et refus d'un mot de passe erroné.
 
 ---
 
