@@ -1,4 +1,4 @@
-/**
+﻿/**
  * B5 / UC4 — tableau de bord du responsable.
  *
  * Lu depuis le cache IndexedDB, jamais du réseau : c'est de la CONSULTATION, et
@@ -17,7 +17,9 @@ import {
   collecterSuggestions,
   construirePareto,
   estIPRCritique,
+  exporterMesuresCsv,
   filtrerEntrees,
+  nomFichierExport,
   lireSeuilRecurrence,
   type CriteresRecherche,
   type Pareto,
@@ -233,6 +235,27 @@ export function TableauBordPage(): JSX.Element {
    * signe. Une décimale sous 10 % — un taux de 8,5 % ne doit pas s'afficher
    * « 8 % » — mais jamais « 0,0 % », qui donne à croire à un arrondi.
    */
+  /**
+   * Export CSV des mesures — protocole d'évaluation du mémoire.
+   *
+   * Généré depuis le cache et téléchargé localement : aucun appel réseau, donc
+   * l'extraction reste possible hors ligne, et rien ne dépend d'un traitement
+   * serveur qu'il faudrait ensuite décrire dans le mémoire.
+   */
+  function exporterMesures(): void {
+    if (!donnees) return;
+
+    const csv = exporterMesuresCsv(donnees.interventions, donnees.equipements);
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+
+    const lien = document.createElement('a');
+    lien.href = url;
+    lien.download = nomFichierExport();
+    lien.click();
+
+    URL.revokeObjectURL(url);
+  }
+
   const pourcent = (v: number): string => {
     const decimales = v > 0 && v < 10 ? 1 : 0;
     return `${new Intl.NumberFormat('fr-FR', { maximumFractionDigits: decimales }).format(v)} %`;
@@ -263,9 +286,35 @@ export function TableauBordPage(): JSX.Element {
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
-        <span style={{ marginLeft: 'auto', fontSize: 13, color: 'var(--c-texte-secondaire)' }}>
-          Calculé depuis le cache local — fonctionne sans réseau.
-        </span>
+        <button
+          type="button"
+          onClick={exporterMesures}
+          disabled={(donnees?.interventions.length ?? 0) === 0}
+          title="Exporte les jalons T1 / T1.5 / T2 de toutes les interventions, au format CSV"
+          style={{
+            marginLeft: 'auto',
+            minHeight: 40,
+            padding: '0 15px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            border: '1.5px solid var(--c-bordure)',
+            borderRadius: 8,
+            background: 'var(--c-fond)',
+            fontSize: 15,
+            fontWeight: 600,
+            color:
+              (donnees?.interventions.length ?? 0) === 0
+                ? 'var(--c-texte-secondaire)'
+                : 'var(--c-primaire)',
+          }}
+        >
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 3v13M7 11l5 5 5-5M4 20h16" />
+          </svg>
+          Exporter les mesures
+        </button>
       </div>
 
       <main style={{ flexGrow: 1, padding: 24, display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -420,3 +469,4 @@ export function TableauBordPage(): JSX.Element {
     </CadreResponsable>
   );
 }
+

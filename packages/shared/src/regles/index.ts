@@ -7,3 +7,5 @@ export * from './csv.js';
 
 export * from './pareto.js';
 
+export * from './export-mesures.js';
+

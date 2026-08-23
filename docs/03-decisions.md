@@ -458,12 +458,48 @@ qu'il prétend analyser.
 
 ---
 
+## D29 — Export des mesures généré côté navigateur
+**Statut :** décidé le 2026-08-23 (phase 9)
+
+Le CSV du protocole de mesure est produit **dans le navigateur, depuis le cache** — aucun appel
+réseau. Deux raisons :
+
+1. L'extraction reste possible hors ligne, comme le reste de la consultation.
+2. Aucun traitement serveur intermédiaire n'a besoin d'être décrit dans le mémoire : ce qui est
+   exporté est exactement ce que l'application a enregistré.
+
+Format point-virgule, virgule décimale, BOM UTF-8 : Excel francophone ouvre le fichier sans étape
+d'import. Un export qu'on doit reformater à la main n'est pas exploitable.
+
+**Les interventions incomplètes figurent dans l'export**, marquées `complete = non`. Une intervention
+sans T1.5 est une donnée du protocole — un cas où le technicien n'a pas trouvé, ou a été interrompu —
+pas un déchet à masquer. Le taux d'incomplétude est lui-même un résultat.
+
+Protocole complet : `docs/04-protocole-mesure-ttdi.md`.
+
+---
+
+## D30 — Garde-fou de rendu
+**Statut :** décidé le 2026-08-23 (phase 9)
+
+Sans limite d'erreur React, une exception dans un composant démonte tout l'arbre et laisse un écran
+blanc. Sur le terrain, de nuit, le technicien n'a alors aucun moyen de comprendre ni de repartir.
+
+`GardeFou` affiche le message d'erreur et deux issues : recharger, ou revenir à l'accueil.
+
+**Ce qu'il ne fait pas : purger le cache.** Les saisies en attente d'envoi y sont stockées ; les
+effacer sur un simple plantage d'affichage perdrait le travail d'un quart entier. L'interface le dit
+explicitement au technicien — « rien n'est perdu ».
+
+---
+
 ## Lacunes de couverture connues
 
 | Quoi | Pourquoi | Où |
 |---|---|---|
 | `supprimerMode` (AMDEC) | pg-mem refuse tout `DELETE` sur une table portant une colonne `generated always as … stored` ; PostgreSQL l'accepte. Reproduire le cas exigerait de retirer du schéma de test précisément ce que les autres tests vérifient. | `amdec.integration.test.ts` |
 | Aller-retour photo complet | Envoi, stockage, relecture authentifiée : demande l'API en marche. Le pipeline de compression est mesuré dans le navigateur. | phase 5 |
+| Enregistrement du service worker sur le build de production | Le sw.js produit est correct — vérifié par inspection : 15 entrées préchargées dont index.html, route de navigation pour la coquille hors ligne, /api/ en NetworkOnly, images en CacheFirst. Le manifeste satisfait tous les critères d'installabilité Android. Le service worker s'enregistre bien en développement. Sous ite preview, dans le navigateur embarqué, l'enregistrement échoue sur une erreur opaque non résolue. **À vérifier sur un vrai Chrome / un vrai terminal Android.** | phase 9 |
 | Toutes les migrations | Écrites et validées syntaxiquement, jamais exécutées contre PostgreSQL. Les tests d'intégration tournent sur pg-mem, qui a déjà divergé sur `= any($1)` et sur `DELETE`. | — |
 
 ---
@@ -480,5 +516,6 @@ qu'il prétend analyser.
 | **O10** | Version **carrée** du pictogramme MaintXpert. Le symbole actuel est un demi-engrenage large (~2,9:1), coupé par le mot-symbole : dans une icône carrée il n'occupe qu'une bande centrale. Un SVG donnerait aussi des icônes nettes — la source est un bitmap de 215 px. | 9 |
 
 | **O11** | Motif de rejet et de renvoi en correction : exigé par l'interface mais non persisté, `entree_sdcr` n'ayant pas de champ pour cela. Le technicien voit sa fiche revenir sans savoir pourquoi. Ajouter `motif_decision TEXT` ? | 4 |
+
 
 

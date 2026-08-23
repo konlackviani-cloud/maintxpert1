@@ -1,7 +1,8 @@
-import { StrictMode } from 'react';
+﻿import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { App } from './App.js';
+import { GardeFou } from './app/GardeFou.js';
 import { baseLocale } from './horsligne/db.js';
 import './design/jetons.css';
 
@@ -18,6 +19,9 @@ if (!racine) {
 
 createRoot(racine).render(
   <StrictMode>
-    <App />
+    <GardeFou>
+      <App />
+    </GardeFou>
   </StrictMode>,
 );
+
