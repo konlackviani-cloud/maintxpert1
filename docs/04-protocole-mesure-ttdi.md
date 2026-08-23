@@ -88,11 +88,33 @@ Format : point-virgule, virgule décimale, BOM UTF-8 — Excel francophone l'ouv
 | `ttdi_secondes`, `ttdi_minutes` | T1.5 − T1 |
 | `duree_totale_secondes`, `duree_totale_minutes` | T2 − T1 |
 | `complete` | `oui` si les trois jalons sont posés |
+| `id_sdcr` | Fiche à laquelle l'intervention a abouti, quel que soit le chemin |
+| `issue` | `cause_confirmee` · `fiche_documentee` · `sans_conclusion` |
 
 **Les interventions incomplètes figurent dans l'export.** Une intervention sans T1.5 est une donnée
-du protocole — un cas où le technicien n'a pas trouvé, ou a été interrompu — pas un déchet à masquer.
-Filtrer sur `complete = oui` avant de calculer les statistiques, et **rapporter le taux
-d'incomplétude** : il est lui-même un résultat.
+du protocole, pas un déchet à masquer. Filtrer sur `complete = oui` avant de calculer les
+statistiques, et **rapporter le taux d'incomplétude** : il est lui-même un résultat.
+
+### 4.1 T1.5 vide recouvre deux situations opposées
+
+Ne pas les confondre : c'est la lecture même du taux d'incomplétude qui en dépend.
+
+| `issue` | Ce qui s'est passé | TTDi |
+|---|---|---|
+| `cause_confirmee` | Le technicien a retrouvé une fiche et confirmé sa cause (A5→A9) | mesuré |
+| `fiche_documentee` | Aucune fiche ne correspondait : il en a documenté une (A6) | **non mesuré** |
+| `sans_conclusion` | Ni confirmation ni fiche : interrompu, ou n'a pas trouvé | non mesuré |
+
+**Seul A9 pose T1.5** — décision assumée, fidèle à la lettre du cahier des charges (D34). Un
+diagnostic mené sans l'aide de la base aboutit donc à une intervention `fiche_documentee`, sans
+TTDi : il a réussi, mais il n'est pas chronométré.
+
+**Conséquence à énoncer dans le mémoire.** Le TTDi ne mesure que les diagnostics **assistés** par la
+base. Il ne faut donc pas le présenter comme le temps de diagnostic « toutes causes », ni le comparer
+à une durée de référence qui inclurait les recherches non assistées : la comparaison jouerait
+mécaniquement en faveur de l'outil. La proportion `fiche_documentee` / `cause_confirmee` est à
+rapporter — elle dit à quel point la base couvrait déjà le terrain pendant la campagne, et elle
+diminue à mesure que la base se remplit.
 
 Une vue SQL équivalente existe côté base : `vue_mesure_intervention` (migration 0006).
 

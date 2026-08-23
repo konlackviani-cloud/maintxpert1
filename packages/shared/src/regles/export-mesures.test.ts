@@ -49,6 +49,39 @@ describe('calculerMesures', () => {
     expect(mesure!.duree_totale_secondes).toBe(1620);
   });
 
+  /**
+   * Sans cette distinction, le taux d'incomplétude rapporté dans le mémoire
+   * mélangerait deux situations opposées : le technicien qui a documenté une
+   * fiche parce qu'aucune n'existait, et celui qui n'a rien conclu.
+   */
+  describe('issue de l’intervention', () => {
+    it('cause_confirmee quand T1.5 est posé', () => {
+      const [mesure] = calculerMesures([intervention()], EQUIPEMENTS);
+      expect(mesure!.issue).toBe('cause_confirmee');
+    });
+
+    it('fiche_documentee quand T1.5 manque mais qu’une fiche a été produite (A6)', () => {
+      const [mesure] = calculerMesures(
+        [intervention({ datetime_cause_confirmee: null, id_sdcr: 42 })],
+        EQUIPEMENTS,
+      );
+
+      expect(mesure!.issue).toBe('fiche_documentee');
+      expect(mesure!.id_sdcr).toBe(42);
+      // Le diagnostic a abouti, mais le TTDi reste non mesuré : c'est assumé.
+      expect(mesure!.ttdi_secondes).toBeNull();
+      expect(mesure!.complete).toBe(false);
+    });
+
+    it('sans_conclusion quand il n’y a ni jalon ni fiche', () => {
+      const [mesure] = calculerMesures(
+        [intervention({ datetime_cause_confirmee: null, id_sdcr: null })],
+        EQUIPEMENTS,
+      );
+      expect(mesure!.issue).toBe('sans_conclusion');
+    });
+  });
+
   it('résout chaîne et équipement', () => {
     const [mesure] = calculerMesures([intervention({ id_equipement: 20 })], EQUIPEMENTS);
     expect(mesure!.chaine).toBe('CH05');
@@ -91,7 +124,7 @@ describe('exporterMesuresCsv', () => {
     // 360 s = 6,0 min — virgule, pas point : Excel francophone lirait « 6.0 » comme du texte.
     expect(ligne).toContain(';360;6,0;');
     expect(ligne).toContain(';1620;27,0;');
-    expect(ligne.endsWith(';oui')).toBe(true);
+    expect(ligne.endsWith(';oui;1;cause_confirmee')).toBe(true);
   });
 
   it('échappe un libellé contenant le séparateur ou des guillemets', () => {

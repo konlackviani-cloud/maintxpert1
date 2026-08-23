@@ -163,6 +163,34 @@ export async function marquerCauseConfirmee(
   return lignes.length > 0;
 }
 
+/**
+ * A6 — l'intervention a produit une fiche : on l'y rattache.
+ *
+ * Sans ce lien, une intervention où le technicien a documenté une nouvelle
+ * fiche est indiscernable, à l'export, d'une intervention abandonnée : toutes
+ * deux sortent avec T1.5 vide. Le protocole de mesure classerait la première
+ * en « n'a pas trouvé », alors qu'il vient d'écrire la cause.
+ *
+ * `is null` : on ne réécrit pas un rattachement déjà posé — le chemin A5, où le
+ * technicien retrouve une fiche existante, fait autorité sur celui-ci.
+ */
+export async function rattacherFicheAIntervention(
+  idIntervention: number,
+  idTechnicien: number,
+  idSdcr: number,
+): Promise<boolean> {
+  const lignes = await requete<{ id_intervention: number }>(
+    `update intervention
+        set id_sdcr = $1
+      where id_intervention = $2
+        and id_technicien = $3
+        and id_sdcr is null
+      returning id_intervention`,
+    [idSdcr, idIntervention, idTechnicien],
+  );
+  return lignes.length > 0;
+}
+
 /** A11 — T2, même protection contre le rejeu. */
 export async function cloturerIntervention(
   idIntervention: number,

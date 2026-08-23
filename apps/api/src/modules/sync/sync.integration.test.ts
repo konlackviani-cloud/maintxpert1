@@ -334,6 +334,50 @@ describe('création de fiche', () => {
     expect(fiche!['id_contributeur']).toBe(TECHNICIEN);
   });
 
+  /**
+   * Chemin A6 : aucune fiche ne correspondait, le technicien en documente une.
+   * Sans ce rattachement, l'intervention ressortait à l'export sans fiche ET
+   * sans T1.5 — indiscernable d'un abandon, alors que le diagnostic a abouti.
+   */
+  it('rattache la fiche produite à l’intervention en cours', async () => {
+    const [, creation] = await appliquerLot(
+      [
+        {
+          id_local: uuid(40),
+          type: 'ouvrir_intervention',
+          charge: { id_equipement: 10, id_sdcr: null },
+          horodatage_terrain: T1,
+        },
+        {
+          id_local: uuid(41),
+          type: 'creer_entree_sdcr',
+          charge: {
+            id_equipement: 10,
+            id_terme_symptome: null,
+            symptome: 'Bruit anormal',
+            id_terme_defaut: null,
+            defaut: 'Accouplement désaligné',
+            id_terme_cause: null,
+            cause: 'Déformation thermique du châssis',
+            id_terme_remede: null,
+            remede: 'Réaligner à froid',
+            id_local_intervention: uuid(40),
+          },
+          horodatage_terrain: T1_5,
+        },
+      ],
+      TECHNICIEN,
+    );
+
+    const idSdcr = creation!.resultat!.id_sdcr;
+    const [intervention] = lire('select * from intervention order by id_intervention desc');
+
+    expect(intervention!['id_sdcr']).toBe(idSdcr);
+    // Le rattachement n'est PAS un jalon : T1.5 reste vide, conformément à la
+    // lettre du cahier des charges — seul A9 le pose.
+    expect(intervention!['datetime_cause_confirmee']).toBeNull();
+  });
+
   it('incrémente le compteur d’usage des termes retenus', async () => {
     await appliquerLot(
       [

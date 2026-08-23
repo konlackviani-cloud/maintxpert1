@@ -42,6 +42,7 @@ import {
   lireMutationAppliquee,
   marquerCauseConfirmee,
   ouvrirIntervention,
+  rattacherFicheAIntervention,
 } from '../../db/requetes/mutations.js';
 
 /* -------------------------------------------------------------------------- */
@@ -116,6 +117,20 @@ async function appliquerUne(
       if (!analyse.success) return refus(idLocal, 'Fiche SDCR incomplète ou invalide.');
 
       const idSdcr = await creerEntreeSDCR(analyse.data, idUtilisateur, horodatage);
+
+      // Rattacher la fiche à l'intervention qui l'a produite. Le client envoie
+      // déjà cette référence ; elle était ignorée, et l'intervention ressortait
+      // à l'export sans fiche ni T1.5 — indiscernable d'un abandon.
+      // Un rattachement impossible ne remet pas la fiche en cause : elle est
+      // créée, c'est l'essentiel. On n'échoue pas la mutation pour un lien.
+      const idLocalIntervention = analyse.data.id_local_intervention;
+      if (idLocalIntervention !== null) {
+        const idIntervention = await resoudreIntervention(idLocalIntervention, interventions);
+        if (idIntervention !== null) {
+          await rattacherFicheAIntervention(idIntervention, idUtilisateur, idSdcr);
+        }
+      }
+
       return { id_local: idLocal, statut: 'applique', resultat: { id_sdcr: idSdcr } };
     }
 

@@ -27,7 +27,24 @@ export const COLONNES_EXPORT = [
   'duree_totale_secondes',
   'duree_totale_minutes',
   'complete',
+  'id_sdcr',
+  'issue',
 ] as const;
+
+/**
+ * Comment l'intervention s'est terminée.
+ *
+ * Indispensable pour lire une ligne sans TTDi : T1.5 vide recouvre deux
+ * situations opposées, et les confondre fausserait le taux d'incomplétude
+ * rapporté dans le mémoire.
+ */
+export type IssueIntervention =
+  /** Le technicien a retrouvé une fiche et confirmé sa cause (A5→A9). TTDi mesuré. */
+  | 'cause_confirmee'
+  /** Aucune fiche ne correspondait : il en a documenté une (A6). Diagnostic abouti, sans jalon T1.5. */
+  | 'fiche_documentee'
+  /** Ni confirmation ni fiche : interrompu, ou n'a pas trouvé. */
+  | 'sans_conclusion';
 
 export interface MesureIntervention {
   id_intervention: number;
@@ -41,6 +58,14 @@ export interface MesureIntervention {
   duree_totale_secondes: number | null;
   /** `true` si les trois jalons sont posés — seules ces lignes entrent dans les statistiques. */
   complete: boolean;
+  /** Fiche SDCR à laquelle l'intervention a abouti, quel que soit le chemin. */
+  id_sdcr: number | null;
+  issue: IssueIntervention;
+}
+
+function determinerIssue(t1_5: string | null, idSdcr: number | null): IssueIntervention {
+  if (t1_5 !== null) return 'cause_confirmee';
+  return idSdcr !== null ? 'fiche_documentee' : 'sans_conclusion';
 }
 
 const secondesEntre = (debut: string, fin: string): number =>
@@ -70,6 +95,8 @@ export function calculerMesures(
         duree_totale_secondes:
           i.datetime_cloture === null ? null : secondesEntre(i.datetime_ouverture, i.datetime_cloture),
         complete: i.datetime_cause_confirmee !== null && i.datetime_cloture !== null,
+        id_sdcr: i.id_sdcr,
+        issue: determinerIssue(i.datetime_cause_confirmee, i.id_sdcr),
       };
     })
     .sort((a, b) => (a.t1 < b.t1 ? -1 : 1));
@@ -113,6 +140,8 @@ export function exporterMesuresCsv(
         m.duree_totale_secondes === null ? '' : String(m.duree_totale_secondes),
         minutes(m.duree_totale_secondes),
         m.complete ? 'oui' : 'non',
+        m.id_sdcr === null ? '' : String(m.id_sdcr),
+        m.issue,
       ].join(';'),
     );
   }

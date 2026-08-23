@@ -563,6 +563,29 @@ mal » ne sert à rien. Elle doit dire vite que la base ne suit pas.
 
 ---
 
+## D34 — T1.5 n'est posé que par A9 ; l'intervention est rattachée à la fiche qu'elle produit
+**Statut :** décidé le 2026-08-23 par l'utilisateur, après constat sur la première intervention réelle
+
+Sur le chemin A6 — aucune fiche ne correspond, le technicien en documente une — `creerFiche()` ne
+posait pas T1.5. La première intervention réelle est donc sortie avec un TTDi vide alors que le
+diagnostic avait abouti.
+
+**Arbitrage retenu : on s'en tient à la lettre du cahier des charges.** A9 est une fonctionnalité
+distincte, avec son propre geste (« Confirmer cette cause »). Enregistrer une fiche n'est pas ce
+geste. Le TTDi ne mesure donc que les diagnostics **assistés**, ce que le mémoire doit énoncer —
+voir `04-protocole-mesure-ttdi.md §4.1`.
+
+**Ce qui a été corrigé en revanche**, parce que c'était un bug et non un arbitrage : le client
+envoyait `id_local_intervention` avec la création de fiche, et le serveur l'ignorait. L'intervention
+ressortait sans fiche **et** sans T1.5 — strictement indiscernable d'un abandon. Elle est désormais
+rattachée à la fiche produite (`rattacherFicheAIntervention`), et l'export porte deux colonnes de
+plus, `id_sdcr` et `issue`, qui séparent les trois cas.
+
+Le rattachement **ne pose aucun jalon** : c'est une trace, pas une mesure. `id_sdcr is null` dans le
+WHERE — le chemin A5, où le technicien retrouve une fiche existante, fait autorité.
+
+---
+
 ## Lacunes de couverture connues
 
 | Quoi | Pourquoi | Où |
