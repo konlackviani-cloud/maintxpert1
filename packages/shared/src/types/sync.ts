@@ -9,6 +9,7 @@
  */
 
 import type {
+  Defaillogramme,
   EntreeConfiguration,
   EntreeSDCR,
   Equipement,
@@ -34,6 +35,8 @@ export interface InstantaneSync {
   fiches_csd: FicheCSD[];
   /** Modes AMDEC — le tableau de bord (B4, B5) est de la consultation, donc hors ligne. */
   modes_amdec: ModeAMDEC[];
+  /** Défaillogrammes — consultation, donc hors ligne (B8). */
+  defaillogrammes: Defaillogramme[];
   configuration: EntreeConfiguration[];
   interventions: Intervention[];
 }
@@ -120,5 +123,6 @@ export interface ResultatMutation {
 export interface ReponsePush {
   resultats: ResultatMutation[];
 }
+
 
 

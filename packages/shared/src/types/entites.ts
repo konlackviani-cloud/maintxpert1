@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Entités du domaine — miroir du dictionnaire de données (mémoire, section 3),
  * augmenté des trois ajouts validés (voir docs/03-decisions.md, D5).
  *
@@ -120,6 +120,10 @@ export interface ModeAMDEC {
 export interface Defaillogramme {
   id_defaillogramme: number;
   id_equipement: number;
+  /** Fiche SDCR de convergence — la récurrence à l'origine de l'analyse (migration 0012, résout O1). */
+  id_sdcr: number;
+  /** Responsable ayant décidé de l'ouverture — rend auditable l'initiative a posteriori. */
+  id_responsable: number;
   branche1_objet: string;
   branche1_defaut: string;
   branche2_objet: string;
@@ -152,3 +156,4 @@ export interface EntreeConfiguration {
   valeur: string;
   description: string;
 }
+

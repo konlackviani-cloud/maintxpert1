@@ -26,6 +26,7 @@ import {
 
 import {
   listerConfiguration,
+  listerDefaillogrammes,
   listerEntreesSDCR,
   listerEquipements,
   listerInterventions,
@@ -60,7 +61,7 @@ export async function construireInstantane(
 ): Promise<InstantaneSync> {
   const horodatage = new Date().toISOString();
 
-  const [equipements, termes, configuration, entrees, interventions, fichesCsd, modesAmdec] =
+  const [equipements, termes, configuration, entrees, interventions, fichesCsd, modesAmdec, defaillogrammes] =
     await Promise.all([
       listerEquipements(),
       listerTermesActifs(),
@@ -72,6 +73,7 @@ export async function construireInstantane(
       listerFichesCSD(),
       // Idem pour l'AMDEC : le tableau de bord est de la consultation.
       listerModesAmdec(),
+      listerDefaillogrammes(),
     ]);
 
   return {
@@ -83,6 +85,7 @@ export async function construireInstantane(
     entrees_sdcr: entrees,
     fiches_csd: fichesCsd,
     modes_amdec: modesAmdec,
+    defaillogrammes,
     interventions,
   };
 }
@@ -249,4 +252,5 @@ export async function appliquerLot(
 
   return resultats;
 }
+
 

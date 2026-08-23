@@ -17,6 +17,8 @@
 
 import type {
   ContributionAValider,
+  Defaillogramme,
+  SaisieDefaillogramme,
   CorrectionsFiche,
   DetailContribution,
   EquipementImporte,
@@ -176,4 +178,18 @@ export const importerEquipements = (
 ): Promise<{ crees: number; existants: number; total: number }> =>
   appelerApi('/import/equipements', { methode: 'POST', corps: { equipements }, delaiMs: 120_000 });
 
+
+
+/* -------------------------------------------------------------------------- */
+/* B8 — défaillogrammes                                                        */
+/* -------------------------------------------------------------------------- */
+
+export const creerDefaillogramme = (saisie: SaisieDefaillogramme): Promise<Defaillogramme> =>
+  appelerApi('/defaillogrammes', { methode: 'POST', corps: saisie });
+
+export const modifierDefaillogramme = (
+  idDefaillogramme: number,
+  saisie: SaisieDefaillogramme,
+): Promise<Defaillogramme> =>
+  appelerApi(`/defaillogrammes/${idDefaillogramme}`, { methode: 'PATCH', corps: saisie });
 

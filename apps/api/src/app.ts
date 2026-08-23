@@ -13,6 +13,7 @@ import { gestionnaireErreurs, routeIntrouvable } from './middlewares/erreurs.js'
 import { routesAmdec } from './modules/amdec/routes.js';
 import { routesAuth } from './modules/auth/routes.js';
 import { routesCSD } from './modules/csd/routes.js';
+import { routesDefaillogramme } from './modules/defaillogramme/routes.js';
 import { routesImport } from './modules/import/routes.js';
 import { routesNomenclature } from './modules/nomenclature/routes.js';
 import { routesPhotos } from './modules/photos/routes.js';
@@ -50,6 +51,7 @@ export function creerApp(): Express {
   app.use('/api/v1/photos', routesPhotos);
   app.use('/api/v1/amdec', routesAmdec);
   app.use('/api/v1/import', routesImport);
+  app.use('/api/v1/defaillogrammes', routesDefaillogramme);
 
   // Les modules métier se branchent ici au fil des phases :
   //   phase 7 — /api/v1/tableau-de-bord, /api/v1/recherche
@@ -63,5 +65,6 @@ export function creerApp(): Express {
 
   return app;
 }
+
 
 

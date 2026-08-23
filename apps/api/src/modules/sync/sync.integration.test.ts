@@ -86,6 +86,15 @@ beforeEach(() => {
       gravite integer not null, frequence integer not null, detection integer not null,
       ipr integer not null default 0);
 
+    create table defaillogramme (
+      id_defaillogramme serial primary key, id_equipement integer not null,
+      id_sdcr integer not null, id_responsable integer not null,
+      branche1_objet varchar(150) not null, branche1_defaut varchar(150) not null,
+      branche2_objet varchar(150) not null, branche2_defaut varchar(150) not null,
+      symptome_convergence varchar(150) not null,
+      cause_intermediaire text not null, cause_premiere text not null,
+      date_creation date not null default current_date);
+
     create table fiche_csd (
       id_csd serial primary key, id_equipement integer not null unique,
       description text not null, photo_url varchar(255));
@@ -401,4 +410,5 @@ describe('instantané descendant', () => {
     expect(instantane.entrees_sdcr).toHaveLength(0);
   });
 });
+
 

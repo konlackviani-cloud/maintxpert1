@@ -1,6 +1,7 @@
 ﻿/** Lecture des référentiels : équipements, nomenclature, configuration. */
 
 import type {
+  Defaillogramme,
   EntreeConfiguration,
   EntreeSDCR,
   Equipement,
@@ -114,5 +115,16 @@ export const listerModesAmdec = (): Promise<ModeAMDEC[]> =>
             gravite, frequence, detection, ipr
        from mode_amdec
       order by ipr desc`,
+  );
+
+
+/** Défaillogrammes — descendus en entier : leur consultation doit tenir hors ligne. */
+export const listerDefaillogrammes = (): Promise<Defaillogramme[]> =>
+  requete<Defaillogramme>(
+    `select id_defaillogramme, id_equipement, id_sdcr, id_responsable,
+            branche1_objet, branche1_defaut, branche2_objet, branche2_defaut,
+            symptome_convergence, cause_intermediaire, cause_premiere, date_creation
+       from defaillogramme
+      order by date_creation desc`,
   );
 

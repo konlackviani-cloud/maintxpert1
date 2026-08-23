@@ -179,6 +179,7 @@ async function tirer(bilan: BilanSync): Promise<void> {
       baseLocale.interventions,
       baseLocale.fichesCsd,
       baseLocale.modesAmdec,
+      baseLocale.defaillogrammes,
     ],
     async () => {
       // Référentiels : toujours complets, donc remplacés en bloc. Un terme
@@ -198,6 +199,8 @@ async function tirer(bilan: BilanSync): Promise<void> {
       // AMDEC en entier : le tableau de bord est de la consultation, donc hors ligne.
       await baseLocale.modesAmdec.clear();
       await baseLocale.modesAmdec.bulkPut(instantane.modes_amdec);
+      await baseLocale.defaillogrammes.clear();
+      await baseLocale.defaillogrammes.bulkPut(instantane.defaillogrammes);
     },
   );
 
@@ -259,5 +262,6 @@ export async function synchroniser(): Promise<BilanSync> {
 
   return bilan;
 }
+
 
 

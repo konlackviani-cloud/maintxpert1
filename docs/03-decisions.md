@@ -416,6 +416,48 @@ technicien qui cherche, donc ce que l'indicateur doit mesurer.
 
 ---
 
+## D27 — Défaillogramme : liens et traçabilité de la décision (résout O1)
+**Statut :** décidé le 2026-08-23 (phase 8)
+
+Migration 0012, deux colonnes.
+
+**`id_sdcr`** — résout O1. Le dictionnaire décrivait `symptome_convergence` comme « lié à une
+EntreeSDCR » mais le typait en VARCHAR : le lien était décrit sans exister. Sans lui, impossible de
+savoir quelle récurrence a déclenché l'analyse. Un index unique interdit d'en ouvrir deux sur la
+même fiche — deux analyses de la même panne produiraient deux vérités concurrentes.
+
+`symptome_convergence` est **conservé** : il fige le symptôme tel qu'il était au moment de l'analyse.
+Si le responsable renomme le terme plus tard (B2), le défaillogramme doit continuer de dire ce qui a
+été analysé.
+
+**`id_responsable`** — ajout hors dictionnaire. Le cahier des charges insiste : l'ouverture est
+**toujours** une décision manuelle (initiative a posteriori). Sans trace de qui a décidé, ce principe
+n'est pas auditable : rien ne distinguerait une analyse décidée d'une analyse produite
+automatiquement.
+
+---
+
+## D28 — Topologie fixe, garantie par le schéma
+**Statut :** décidé le 2026-08-23 (phase 8)
+
+`schemaDefaillogramme` déclare quatre champs de branche nommés — aucun tableau. Une troisième
+branche n'est pas rejetée : elle n'a **pas de place** dans le schéma. C'est ce qui rend impossible la
+dérive vers l'éditeur à topologie libre, explicitement hors périmètre v1.0.
+
+Deux garde-fous supplémentaires, tous deux testés :
+
+- **Les deux branches doivent être distinctes.** Deux branches identiques ne convergent pas : elles
+  décrivent la même contribution écrite deux fois, et le défaillogramme perd son sens. Vérifié à la
+  casse et aux espaces près. Un même objet avec deux défauts différents reste valide.
+- **Seule une fiche validée** peut faire l'objet d'un défaillogramme : une contribution non relue ne
+  constitue pas une récurrence établie.
+
+Le symptôme et l'équipement ne sont **pas** fournis par le client : ils sont lus sur la fiche.
+Les laisser saisir permettrait de créer un défaillogramme qui ne correspond pas à la récurrence
+qu'il prétend analyser.
+
+---
+
 ## Lacunes de couverture connues
 
 | Quoi | Pourquoi | Où |
@@ -430,7 +472,6 @@ technicien qui cherche, donc ce que l'indicateur doit mesurer.
 
 | # | Point | Phase concernée |
 |---|---|---|
-| **O1** | `defaillogramme.symptome_convergence` est décrit « lié à une EntreeSDCR » mais typé VARCHAR. Ajouter une FK `id_sdcr` ? | 8 |
 | **O4** | `TermeNomenclature` propre à un équipement (conforme au mémoire) → duplication des libellés courants sur les 4 chaînes. Rattachement à la `famille` avec surcharge ? | 4 |
 | **O6** | `archivee` : qui archive, sur quel critère ? | 4 |
 | **O7** | Format réel du CSV DimoMaint (colonnes) — extrait à fournir. | 6 |
@@ -439,4 +480,5 @@ technicien qui cherche, donc ce que l'indicateur doit mesurer.
 | **O10** | Version **carrée** du pictogramme MaintXpert. Le symbole actuel est un demi-engrenage large (~2,9:1), coupé par le mot-symbole : dans une icône carrée il n'occupe qu'une bande centrale. Un SVG donnerait aussi des icônes nettes — la source est un bitmap de 215 px. | 9 |
 
 | **O11** | Motif de rejet et de renvoi en correction : exigé par l'interface mais non persisté, `entree_sdcr` n'ayant pas de champ pour cela. Le technicien voit sa fiche revenir sans savoir pourquoi. Ajouter `motif_decision TEXT` ? | 4 |
+
 

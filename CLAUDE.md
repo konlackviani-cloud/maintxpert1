@@ -182,10 +182,11 @@ npm run db:reset         # rejoue migrations + seed
 | 5 | CSD & photos A7, B6 | fait |
 | 6 | AMDEC & import CSV B4, B7 | fait |
 | 7 | Tableau de bord B5, B3 | fait |
-| 8 | Défaillogramme B8 | à faire |
+| 8 | Défaillogramme B8 | fait |
 | 9 | Durcissement, tests, mesure TTDi | à faire |
 
 **Ne pas passer à la phase suivante sans validation explicite de l'utilisateur.**
+
 
 
 
