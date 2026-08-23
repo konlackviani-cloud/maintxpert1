@@ -80,3 +80,29 @@ export function effacerSession(): void {
     }
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Perte de session subie                                                      */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Le client HTTP efface la session quand un 401 survit au rafraîchissement.
+ * Il s'exécute hors de React : sans ce signal, l'interface continuait d'afficher
+ * l'utilisateur connecté alors que ses jetons n'existaient plus, et chaque
+ * action échouait en silence. Défaut constaté en conditions réelles.
+ *
+ * À distinguer d'une déconnexion volontaire : ici l'utilisateur n'a rien
+ * demandé, et sa file d'envoi doit être PRÉSERVÉE.
+ */
+const abonnes = new Set<() => void>();
+
+export function surPerteSession(rappel: () => void): () => void {
+  abonnes.add(rappel);
+  return () => {
+    abonnes.delete(rappel);
+  };
+}
+
+export function signalerPerteSession(): void {
+  for (const rappel of [...abonnes]) rappel();
+}

@@ -136,21 +136,16 @@ export const baseLocale = new BaseLocale();
 /* -------------------------------------------------------------------------- */
 
 /**
- * IndexedDB ne met à niveau un schéma que si AUCUNE autre connexion ne le
- * tient ouvert. Sans les deux gestionnaires ci-dessous, un onglet resté ouvert
- * sur une version précédente bloque indéfiniment le nouveau : Dexie n'ouvre
- * jamais la base, toutes les lectures restent en attente, et l'écran affiche un
- * « Chargement… » éternel sans dire pourquoi. Défaut constaté en conditions
- * réelles.
+ * IndexedDB ne met à niveau un schéma que si AUCUNE autre connexion ne le tient
+ * ouvert. Dexie gère déjà le cas de l'onglet ANCIEN (il se ferme de lui-même sur
+ * `versionchange`, en gardant la réouverture automatique) — ne pas le
+ * réimplémenter : un `close()` sans option coupe `autoOpen` et condamne
+ * l'instance pour toute la durée de la page.
+ *
+ * Reste le cas de l'onglet NOUVEAU, que Dexie se contente de journaliser : la
+ * mise à niveau attend, aucune lecture n'aboutit, et l'écran affiche un
+ * « Chargement… » éternel sans dire pourquoi. On le remonte à l'interface.
  */
-
-/** L'onglet ANCIEN se retire pour laisser passer la mise à niveau. */
-baseLocale.on('versionchange', () => {
-  baseLocale.close();
-  return true;
-});
-
-/** L'onglet NOUVEAU est bloqué : on le dit, au lieu de tourner dans le vide. */
 let signalerBlocage: (() => void) | null = null;
 
 baseLocale.on('blocked', () => {
@@ -194,7 +189,15 @@ export async function compterEnAttente(): Promise<{ mutations: number; photos: n
 /**
  * Purge totale du cache. Réservée à la déconnexion : contrainte BYOD, aucune
  * donnée industrielle ne doit subsister sur un terminal après déconnexion.
+ *
+ * La réouverture n'est pas une précaution : `Dexie.delete()` ferme la base avec
+ * `disableAutoOpen: true` par défaut. Sans les deux arguments ci-dessous,
+ * l'instance restait condamnée jusqu'au rechargement de la page — la
+ * reconnexion suivante trouvait une base close, la synchronisation ne pouvait
+ * plus rien écrire et le tableau de bord attendait « Lecture du cache local… »
+ * indéfiniment. Défaut constaté en conditions réelles.
  */
 export async function purgerCache(): Promise<void> {
-  await baseLocale.delete();
+  await baseLocale.delete({ disableAutoOpen: false });
+  await baseLocale.open();
 }

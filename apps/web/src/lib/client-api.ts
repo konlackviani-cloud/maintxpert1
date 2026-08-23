@@ -14,6 +14,7 @@ import {
   lireJetonAcces,
   lireJetonRafraichissement,
   majJetonAcces,
+  signalerPerteSession,
 } from '../modules/auth/stockage-session.js';
 
 const BASE = '/api/v1';
@@ -169,6 +170,9 @@ export async function appelerApi<T>(chemin: string, options: Options = {}): Prom
 
     if (reponse.status === 401) {
       effacerSession();
+      // Sans ce signal, l'écran resterait sur l'utilisateur « connecté »,
+      // toutes ses actions échouant sans qu'il sache pourquoi.
+      signalerPerteSession();
       throw new ErreurApi(401, 'Session expirée. Reconnectez-vous.');
     }
   }

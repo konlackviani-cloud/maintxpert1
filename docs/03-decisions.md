@@ -503,6 +503,41 @@ explicitement au technicien — « rien n'est perdu ».
 
 ---
 
+## D31 — Purge du cache : la base doit rester utilisable
+**Statut :** décidé le 2026-08-23 (durcissement, défaut constaté en conditions réelles)
+
+`Dexie.delete()` ferme la base avec `disableAutoOpen: true` **par défaut**. `purgerCache()` appelait
+`baseLocale.delete()` seul : l'instance restait condamnée jusqu'au rechargement de la page.
+
+Or la reconnexion ne recharge rien — c'est un changement de route. Conséquence observée : après
+*Quitter* puis reconnexion, la synchronisation ne pouvait plus rien écrire et le tableau de bord
+restait sur « Lecture du cache local… » indéfiniment, sans message.
+
+La purge fait donc explicitement les deux gestes : `delete({ disableAutoOpen: false })` puis `open()`.
+Verrouillé par `purge-cache.test.ts`, qui échoue avec `DatabaseClosedError` sur la version fautive.
+
+**Corollaire :** ne pas réimplémenter le gestionnaire `versionchange` de Dexie. Le sien ferme la base
+en préservant la réouverture automatique ; un `close()` sans option produirait exactement la même
+panne. Seul `blocked` est surchargé, pour remonter le blocage à l'interface (`AlerteCacheBloque`).
+
+---
+
+## D32 — Session perdue ≠ déconnexion : la file d'envoi survit
+**Statut :** décidé le 2026-08-23 (durcissement, défaut constaté en conditions réelles)
+
+Quand un 401 survit au rafraîchissement, le client HTTP efface les jetons. Il s'exécute hors de
+React : l'interface continuait d'afficher l'utilisateur connecté alors que sa session n'existait
+plus, et chaque action échouait en silence — le cas le plus trompeur pour un responsable qui croit
+avoir validé une fiche.
+
+`signalerPerteSession()` ramène désormais l'écran de connexion.
+
+**Ce qu'il ne fait pas : purger le cache.** La purge BYOD (`seDeconnecter`, D31) est le geste d'une
+déconnexion *volontaire*. Ici l'utilisateur n'a rien demandé : sa file d'envoi peut contenir un quart
+entier de travail hors ligne. L'effacer sur une expiration de jeton serait une perte de données.
+
+---
+
 ## Lacunes de couverture connues
 
 | Quoi | Pourquoi | Où |

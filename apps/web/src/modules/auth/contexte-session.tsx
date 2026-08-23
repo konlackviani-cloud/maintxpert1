@@ -5,6 +5,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -17,6 +18,7 @@ import {
   enregistrerSession,
   lireJetonAcces,
   lireUtilisateur,
+  surPerteSession,
 } from './stockage-session.js';
 
 interface ValeurSession {
@@ -34,6 +36,14 @@ export function FournisseurSession({ children }: { children: ReactNode }): JSX.E
   const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(() =>
     lireJetonAcces() ? lireUtilisateur() : null,
   );
+
+  /**
+   * Session rejetée par le serveur (401 survivant au rafraîchissement). On
+   * ramène l'écran de connexion, mais SANS purger le cache : l'utilisateur n'a
+   * pas demandé à partir, et sa file d'envoi contient peut-être des heures de
+   * travail hors ligne. La purge reste le geste de la déconnexion volontaire.
+   */
+  useEffect(() => surPerteSession(() => setUtilisateur(null)), []);
 
   const seConnecter = useCallback(async (identifiants: Identifiants) => {
     const session = await appelerApi<Session>('/auth/connexion', {
